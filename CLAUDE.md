@@ -37,7 +37,7 @@ Fotografii, notificări, offline, mai multe mașini, export PDF, AI, deep link, 
 ## Convenții
 
 - Interfața este în română; codul, identificatorii, comentariile și mesajele de commit sunt în engleză.
-- Ecranele în `app/`, logica și clientul în `src/lib/`, componentele comune în `src/components/`.
+- Ecranele în `src/app/`, logica și clientul în `src/lib/`, componentele comune în `src/components/`.
 - Funcțiile de calcul sunt pure și nu importă clientul Supabase.
 - Erorile de rețea și de salvare afișează mesaje clare; formularul păstrează datele pentru reîncercare.
 - Ștergerea cere confirmare.

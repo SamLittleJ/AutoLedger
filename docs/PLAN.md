@@ -211,15 +211,15 @@ De ce: cheltuielile mici de zi cu zi sunt cele pe care un utilizator le notează
 ## 9. Structura propusă a proiectului
 
 ```
-app/                      # Expo Router
-  (auth)/sign-in.tsx
-  (auth)/sign-up.tsx
-  (app)/(tabs)/index.tsx    # Rezumat
-  (app)/(tabs)/history.tsx  # Istoric
-  (app)/(tabs)/vehicle.tsx  # Mașina mea
-  (app)/expense/new.tsx
-  (app)/expense/[id].tsx    # editare + ștergere
 src/
+  app/                      # Expo Router
+    (auth)/sign-in.tsx
+    (auth)/sign-up.tsx
+    (app)/(tabs)/index.tsx    # Rezumat
+    (app)/(tabs)/history.tsx  # Istoric
+    (app)/(tabs)/vehicle.tsx  # Mașina mea
+    (app)/expense/new.tsx
+    (app)/expense/[id].tsx    # editare + ștergere
   lib/supabase.ts           # clientul Supabase
   lib/calc.ts               # totaluri, total lunar (funcții pure)
   lib/categories.ts         # coduri + etichete RO
@@ -233,7 +233,7 @@ docs/
   PLAN.md
 ```
 
-Ecranele, componentele comune, clientul Supabase și funcțiile de calcul stau în module separate.
+Ecranele, componentele comune, clientul Supabase și funcțiile de calcul stau în module separate. Rutele stau în `src/app/`, convenția șablonului Expo SDK 58 (în v0.3 erau în `app/`).
 
 ---
 
