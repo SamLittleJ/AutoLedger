@@ -1,57 +1,107 @@
 # AutoLedger
 
-An Expo SDK 58 / React Native application for tracking car expenses. Screens live
-in `src/app/`, shared components in `src/components/`, and client logic in `src/lib/`.
-The interface is in Romanian.
+[![CI](https://github.com/SamLittleJ/AutoLedger/actions/workflows/ci.yml/badge.svg)](https://github.com/SamLittleJ/AutoLedger/actions/workflows/ci.yml)
 
-The week 1 client includes email/password sign-up, sign-in, session restoration,
-protected routes, and sign-out. The authenticated screen is a temporary placeholder.
-No Supabase project is configured yet; real authentication has not been verified.
+AutoLedger is a mobile app for recording a car's expenses (service, repairs, fuel,
+consumables, accessories), reviewing the history, and seeing monthly and total
+spending in RON. It is a learning project built for a university course and for
+a portfolio. The domain is well known and similar apps exist (for example Drivvo
+and Fuelio), so the emphasis is on execution: tested data isolation, a clean
+schema, and documentation. The user interface is in Romanian.
 
-## Local setup
+## Status
 
-Install SDK-compatible dependencies:
+Work in progress, following a 5-week plan. Week 1 (authentication and the
+`vehicles` table with Row Level Security) is in progress. The full plan, including
+design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
+
+## Tech stack
+
+- React Native with Expo SDK 58 and TypeScript
+- Expo Router for navigation
+- Supabase: Auth, PostgreSQL with Row Level Security, auto-generated REST API
+- Supabase CLI for versioned SQL migrations
+- Jest with jest-expo for unit tests (planned)
+
+## Security model
+
+- Row Level Security is enabled on every table.
+- Policies compare against `(select auth.uid())`, as recommended by Supabase for
+  query performance.
+- The app uses only the Supabase URL and the publishable key, read from
+  `EXPO_PUBLIC_*` environment variables. No secret keys, database passwords or
+  `.env` files are committed.
+- Expense ownership is checked through the associated vehicle with an `EXISTS`
+  condition in both `USING` and `WITH CHECK` (planned, week 2).
+
+## Getting started
+
+Prerequisites:
+
+- Node.js 22
+- Expo Go installed on a phone
+- A Supabase project
 
 ```bash
-npx expo install
+npm install
 ```
 
-Supply these public environment variables before starting Expo. `.env.example`
-lists their names with empty values; this repository does not provide a `.env` file.
+Copy the environment template and fill in the values from your Supabase project
+(Project Settings, API):
 
-- `EXPO_PUBLIC_SUPABASE_URL`: the Supabase project URL.
-- `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: the project's publishable key.
+```bash
+cp .env.example .env
+# set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+```
 
-Both values are required. Never use a secret or service-role key in the app.
-Restart Expo after changing the environment variables.
+Apply the database migrations:
+
+```bash
+npx supabase login
+npx supabase link --project-ref <ref>
+npx supabase db push
+```
+
+During development, disable "Confirm email" in the Supabase Auth settings. The
+plan enables it again in week 5.
+
+Start the development server and scan the QR code with Expo Go:
 
 ```bash
 npx expo start
 ```
 
-The client stores sessions using `expo-sqlite/localStorage/install` on native and
-browser localStorage on web. Native token refresh follows the app's foreground
-state. The SQLite module is included in Expo Go.
-
-When a backend is available, disable email confirmation for weeks 1–4 as specified
-in `docs/PLAN.md`. If confirmation is enabled, sign-up without a session displays
-a message asking the user to confirm their email and then sign in. Confirmation
-deep links are outside the current scope.
-
-## Verification
+## Checks
 
 ```bash
 npx expo lint
 npx tsc --noEmit
 ```
 
-These checks do not require Supabase credentials. Sign-up, sign-in, persisted
-sessions across restarts, foreground/background refresh, and sign-out still need
-verification on a device once a Supabase project is available.
+These checks run in GitHub Actions on every push and pull request
+(see [.github/workflows/ci.yml](.github/workflows/ci.yml)).
 
-## References
+## Project structure
 
-- [Implementation plan](docs/PLAN.md)
-- [Supabase Expo quickstart](https://supabase.com/docs/guides/getting-started/quickstarts/expo-react-native)
-- [Expo SDK 58 SQLite](https://docs.expo.dev/versions/v58.0.0/sdk/sqlite/)
-- [Expo Router protected routes](https://docs.expo.dev/router/advanced/protected/)
+```
+src/
+  app/          Expo Router screens and layouts ((auth) and (app) groups)
+  components/   Shared UI components
+  lib/          Supabase client, authentication logic
+supabase/
+  migrations/  Versioned SQL migrations (schema, RLS policies)
+docs/
+  PLAN.md       Implementation plan and design decisions (Romanian)
+```
+
+## Known limitations
+
+- Supabase free-tier projects pause after a period of inactivity. Resume the
+  project in the Supabase dashboard before a demonstration.
+- The app works online only; there is no offline mode.
+- One vehicle per account.
+- Email confirmation links do not open the app (no deep link). Out of scope.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
