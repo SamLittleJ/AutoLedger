@@ -1,56 +1,57 @@
-# Welcome to your Expo app 👋
+# AutoLedger
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+An Expo SDK 58 / React Native application for tracking car expenses. Screens live
+in `src/app/`, shared components in `src/components/`, and client logic in `src/lib/`.
+The interface is in Romanian.
 
-## Get started
+The week 1 client includes email/password sign-up, sign-in, session restoration,
+protected routes, and sign-out. The authenticated screen is a temporary placeholder.
+No Supabase project is configured yet; real authentication has not been verified.
 
-1. Install dependencies
+## Local setup
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Install SDK-compatible dependencies:
 
 ```bash
-npm run reset-project
+npx expo install
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Supply these public environment variables before starting Expo. `.env.example`
+lists their names with empty values; this repository does not provide a `.env` file.
 
-### Other setup steps
+- `EXPO_PUBLIC_SUPABASE_URL`: the Supabase project URL.
+- `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: the project's publishable key.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Both values are required. Never use a secret or service-role key in the app.
+Restart Expo after changing the environment variables.
 
-## Learn more
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+The client stores sessions using `expo-sqlite/localStorage/install` on native and
+browser localStorage on web. Native token refresh follows the app's foreground
+state. The SQLite module is included in Expo Go.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+When a backend is available, disable email confirmation for weeks 1–4 as specified
+in `docs/PLAN.md`. If confirmation is enabled, sign-up without a session displays
+a message asking the user to confirm their email and then sign in. Confirmation
+deep links are outside the current scope.
 
-## Join the community
+## Verification
 
-Join our community of developers creating universal apps.
+```bash
+npx expo lint
+npx tsc --noEmit
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+These checks do not require Supabase credentials. Sign-up, sign-in, persisted
+sessions across restarts, foreground/background refresh, and sign-out still need
+verification on a device once a Supabase project is available.
+
+## References
+
+- [Implementation plan](docs/PLAN.md)
+- [Supabase Expo quickstart](https://supabase.com/docs/guides/getting-started/quickstarts/expo-react-native)
+- [Expo SDK 58 SQLite](https://docs.expo.dev/versions/v58.0.0/sdk/sqlite/)
+- [Expo Router protected routes](https://docs.expo.dev/router/advanced/protected/)
