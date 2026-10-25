@@ -39,6 +39,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      expenses: {
+        Row: {
+          category: string
+          cost: number
+          created_at: string
+          description: string
+          id: string
+          notes: string | null
+          odometer: number | null
+          performed_on: string
+          vehicle_id: string
+        }
+        Insert: {
+          category: string
+          cost: number
+          created_at?: string
+          description: string
+          id?: string
+          notes?: string | null
+          odometer?: number | null
+          performed_on: string
+          vehicle_id: string
+        }
+        Update: {
+          category?: string
+          cost?: number
+          created_at?: string
+          description?: string
+          id?: string
+          notes?: string | null
+          odometer?: number | null
+          performed_on?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           created_at: string
