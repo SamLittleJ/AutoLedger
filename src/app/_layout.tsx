@@ -24,10 +24,11 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!session}>
+      {/* Explicit targets: "/" lives in (app), and (auth) has no index route. */}
+      <Stack.Protected guard={!session} redirectTo="/">
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
-      <Stack.Protected guard={!!session}>
+      <Stack.Protected guard={!!session} redirectTo="/sign-in">
         <Stack.Screen name="(app)" />
       </Stack.Protected>
     </Stack>

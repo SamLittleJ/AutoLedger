@@ -4,6 +4,8 @@ import "expo-sqlite/localStorage/install";
 import { createClient } from "@supabase/supabase-js";
 import { AppState, Platform } from "react-native";
 
+import type { Database } from "@/types/database";
+
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabasePublishableKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
@@ -13,7 +15,7 @@ if (!supabaseUrl?.trim() || !supabasePublishableKey?.trim()) {
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
+export const supabase = createClient<Database>(supabaseUrl, supabasePublishableKey, {
   auth: {
     // Browser storage is unavailable during server rendering.
     storage:

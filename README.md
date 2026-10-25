@@ -12,7 +12,7 @@ schema, and documentation. The user interface is in Romanian.
 ## Status
 
 Work in progress, following a 5-week plan. Week 1 (authentication and the
-`vehicles` table with Row Level Security) is in progress. The full plan, including
+`vehicles` table with Row Level Security) is complete and verified on a phone. The full plan, including
 design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
 ## Tech stack
@@ -53,6 +53,9 @@ Copy the environment template and fill in the values from your Supabase project
 cp .env.example .env
 # set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ```
+
+Use the base project URL (`https://<ref>.supabase.co`), not the Data API endpoint
+ending in `/rest/v1/`; otherwise every auth request returns 404.
 
 Apply the database migrations:
 
