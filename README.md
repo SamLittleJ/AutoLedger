@@ -21,7 +21,7 @@ design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 - Expo Router for navigation
 - Supabase: Auth, PostgreSQL with Row Level Security, auto-generated REST API
 - Supabase CLI for versioned SQL migrations
-- Jest with jest-expo for unit tests (planned)
+- Jest with jest-expo for unit tests
 
 ## Security model
 
@@ -79,6 +79,7 @@ npx expo start
 ```bash
 npx expo lint
 npx tsc --noEmit
+npm test
 ```
 
 These checks run in GitHub Actions on every push and pull request
