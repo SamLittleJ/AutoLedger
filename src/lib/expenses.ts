@@ -16,9 +16,28 @@ export async function fetchExpenses(vehicleId: string): Promise<Expense[]> {
   return data;
 }
 
+// Null when the expense does not exist or belongs to another account (RLS).
+export async function fetchExpense(id: string): Promise<Expense | null> {
+  const { data, error } = await supabase.from("expenses").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 export async function createExpense(vehicleId: string, input: ExpenseInput): Promise<void> {
   const { error } = await supabase
     .from("expenses")
     .insert({ ...input, vehicle_id: vehicleId });
+  if (error) throw error;
+}
+
+// vehicle_id is not part of the input: an expense never changes vehicle.
+// `.single()` fails with PGRST116 when no row matched (deleted meanwhile).
+export async function updateExpense(id: string, input: ExpenseInput): Promise<void> {
+  const { error } = await supabase
+    .from("expenses")
+    .update(input)
+    .eq("id", id)
+    .select("id")
+    .single();
   if (error) throw error;
 }

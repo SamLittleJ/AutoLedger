@@ -1,4 +1,8 @@
-import { validateExpenseForm, type ExpenseFormValues } from "@/lib/expense-form";
+import {
+  expenseToFormValues,
+  validateExpenseForm,
+  type ExpenseFormValues,
+} from "@/lib/expense-form";
 
 const TODAY = "2026-10-25";
 
@@ -59,6 +63,50 @@ describe("validateExpenseForm", () => {
       expect(Object.keys(result.errors).sort()).toEqual(
         ["category", "cost", "description", "odometer", "performedOn"].sort(),
       );
+    }
+  });
+});
+
+describe("expenseToFormValues", () => {
+  const stored = {
+    performed_on: "2026-03-12",
+    category: "service",
+    description: "Schimb ulei",
+    cost: 350.5,
+    odometer: 152300,
+    notes: "Filtre incluse",
+  };
+
+  it("formats the cost with two decimals and a decimal comma", () => {
+    expect(expenseToFormValues(stored)).toEqual({
+      performedOn: "2026-03-12",
+      category: "service",
+      description: "Schimb ulei",
+      cost: "350,50",
+      odometer: "152300",
+      notes: "Filtre incluse",
+    });
+    expect(expenseToFormValues({ ...stored, cost: 7 }).cost).toBe("7,00");
+    expect(expenseToFormValues({ ...stored, cost: 0.1 }).cost).toBe("0,10");
+  });
+
+  it("maps missing odometer and notes to empty fields", () => {
+    const values = expenseToFormValues({ ...stored, odometer: null, notes: null });
+    expect(values.odometer).toBe("");
+    expect(values.notes).toBe("");
+  });
+
+  it("round-trips through validation unchanged", () => {
+    const cases = [
+      stored,
+      { ...stored, cost: 99999999.99, odometer: 0, notes: null },
+      { ...stored, category: "fuel", cost: 0, odometer: null },
+    ];
+    for (const expense of cases) {
+      expect(validateExpenseForm(expenseToFormValues(expense), TODAY)).toEqual({
+        ok: true,
+        data: expense,
+      });
     }
   });
 });

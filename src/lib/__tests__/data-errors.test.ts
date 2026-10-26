@@ -13,6 +13,10 @@ describe("getDataErrorMessage", () => {
     expect(getDataErrorMessage({ code: "23505" })).toMatch(/deja o mașină/);
   });
 
+  it("explains an update that matched no row", () => {
+    expect(getDataErrorMessage({ code: "PGRST116" })).toMatch(/nu mai există/);
+  });
+
   it("falls back to a generic message", () => {
     expect(getDataErrorMessage({ code: "XX000" })).toMatch(/Nu am putut salva/);
   });

@@ -18,6 +18,9 @@ export function getDataErrorMessage(error: unknown): string {
       return "Unele valori nu sunt valide. Verifică datele introduse.";
     case "42501":
       return "Nu ai acces la aceste date. Conectează-te din nou.";
+    // Only expense updates use `.single()` on rows that can disappear.
+    case "PGRST116":
+      return "Cheltuiala nu mai există. Probabil a fost ștearsă.";
     case "PGRST301":
     case "PGRST303":
       return "Sesiunea a expirat. Conectează-te din nou.";

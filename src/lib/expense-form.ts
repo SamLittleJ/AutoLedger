@@ -1,6 +1,7 @@
 import { isExpenseCategory, type ExpenseCategory } from "@/lib/categories";
 import { isValidIsoDate } from "@/lib/dates";
 import { parseCost, parseOdometer } from "@/lib/numbers";
+import type { Tables } from "@/types/database";
 
 export type ExpenseFormValues = {
   performedOn: string;
@@ -71,5 +72,23 @@ export function validateExpenseForm(
       odometer: odometer.value,
       notes: notes || null,
     },
+  };
+}
+
+type StoredExpense = Pick<
+  Tables<"expenses">,
+  "performed_on" | "category" | "description" | "cost" | "odometer" | "notes"
+>;
+
+// Inverse of validateExpenseForm, for the edit screen. The cost keeps two
+// decimals and a decimal comma so it reads like what the user typed.
+export function expenseToFormValues(expense: StoredExpense): ExpenseFormValues {
+  return {
+    performedOn: expense.performed_on,
+    category: expense.category,
+    description: expense.description,
+    cost: expense.cost.toFixed(2).replace(".", ","),
+    odometer: expense.odometer === null ? "" : String(expense.odometer),
+    notes: expense.notes ?? "",
   };
 }
