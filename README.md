@@ -15,7 +15,9 @@ Work in progress, following a 5-week plan. Week 1 (authentication and the
 `vehicles` table with Row Level Security) is complete and verified on a phone.
 Week 2 (the `expenses` table with RLS and the odometer trigger, tab navigation,
 the vehicle screen, adding and listing expenses) is complete: verified on a
-phone, and the cross-account RLS check passes. The full plan, including
+phone, and the cross-account RLS check passes. Week 3 (editing, deleting with
+confirmation, the summary with the total spent and the latest five expenses,
+and filtering history by category) is complete and verified on a phone. The full plan, including
 design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
 ## Tech stack
