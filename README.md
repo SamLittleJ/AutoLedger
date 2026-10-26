@@ -12,7 +12,10 @@ schema, and documentation. The user interface is in Romanian.
 ## Status
 
 Work in progress, following a 5-week plan. Week 1 (authentication and the
-`vehicles` table with Row Level Security) is complete and verified on a phone. The full plan, including
+`vehicles` table with Row Level Security) is complete and verified on a phone.
+Week 2 (the `expenses` table with RLS and the odometer trigger, tab navigation,
+the vehicle screen, adding and listing expenses) is complete: verified on a
+phone, and the cross-account RLS check passes. The full plan, including
 design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
 ## Tech stack
@@ -21,7 +24,7 @@ design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 - Expo Router for navigation
 - Supabase: Auth, PostgreSQL with Row Level Security, auto-generated REST API
 - Supabase CLI for versioned SQL migrations
-- Jest with jest-expo for unit tests (planned)
+- Jest with jest-expo for unit tests
 
 ## Security model
 
@@ -32,7 +35,10 @@ design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
   `EXPO_PUBLIC_*` environment variables. No secret keys, database passwords or
   `.env` files are committed.
 - Expense ownership is checked through the associated vehicle with an `EXISTS`
-  condition in both `USING` and `WITH CHECK` (planned, week 2).
+  condition in both `USING` and `WITH CHECK`; `expenses` has no `user_id`
+  column.
+- A cross-account script (`scripts/rls-check.ts`) verifies the isolation
+  through the REST API, using only the publishable key (see below).
 
 ## Getting started
 
@@ -79,9 +85,28 @@ npx expo start
 ```bash
 npx expo lint
 npx tsc --noEmit
+npm test
 ```
 
-These checks run in GitHub Actions on every push and pull request
+### RLS check
+
+`scripts/rls-check.ts` signs in as two dedicated test accounts, A and B, and
+tries to read, insert, update and delete A's vehicle and expenses as B,
+including inserting an expense on A's vehicle and moving one of B's expenses
+onto it. Every attempt must fail or affect zero rows; an anonymous client must
+see nothing. It also checks that the odometer trigger raises
+`current_odometer` only for a higher reading. Test rows are removed at the end.
+
+```bash
+cp .env.test.example .env.test
+# fill in the Supabase URL, publishable key and the two test accounts
+npm run rls-check
+```
+
+Create both accounts in the app first. Do not use a real account: the script
+writes data. Run it again after any change to policies or the trigger.
+
+The lint, type and unit checks run in GitHub Actions on every push and pull request
 (see [.github/workflows/ci.yml](.github/workflows/ci.yml)).
 
 ## Project structure
@@ -90,7 +115,10 @@ These checks run in GitHub Actions on every push and pull request
 src/
   app/          Expo Router screens and layouts ((auth) and (app) groups)
   components/   Shared UI components
-  lib/          Supabase client, authentication logic
+  lib/          Supabase client, data access, validation, pure helpers
+  types/        Generated database types
+scripts/
+  rls-check.ts  Cross-account RLS and trigger check
 supabase/
   migrations/  Versioned SQL migrations (schema, RLS policies)
 docs/
