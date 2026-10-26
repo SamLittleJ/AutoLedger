@@ -15,6 +15,15 @@ export function totalCost(expenses: readonly WithCost[]): number {
   return bani / 100;
 }
 
+// "Cheltuit luna aceasta": `month` is "YYYY-MM" from currentMonthKey. Matches
+// the performed_on prefix as a string, never through Date (D5).
+export function monthlyTotal(
+  expenses: readonly (WithCost & { performed_on: string })[],
+  month: string,
+): number {
+  return totalCost(expenses.filter((expense) => expense.performed_on.startsWith(`${month}-`)));
+}
+
 // History order (docs/PLAN.md §5): newest date first, then newest entry.
 // performed_on is compared as a "YYYY-MM-DD" string, never parsed (D5).
 export function compareHistoryOrder(a: WithOrder, b: WithOrder): number {

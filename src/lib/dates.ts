@@ -28,3 +28,30 @@ export function formatDisplayDate(value: string): string {
   const match = ISO_DATE.exec(value);
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
+
+// "YYYY-MM" of the phone's local date, for "Cheltuit luna aceasta" (D5).
+export function currentMonthKey(date: Date): string {
+  return toLocalIsoDate(date).slice(0, 7);
+}
+
+const MONTH_NAMES = [
+  "ianuarie",
+  "februarie",
+  "martie",
+  "aprilie",
+  "mai",
+  "iunie",
+  "iulie",
+  "august",
+  "septembrie",
+  "octombrie",
+  "noiembrie",
+  "decembrie",
+];
+
+// "2026-10" -> "octombrie 2026"
+export function formatMonth(monthKey: string): string {
+  const match = /^(\d{4})-(\d{2})$/.exec(monthKey);
+  const name = match ? MONTH_NAMES[Number(match[2]) - 1] : undefined;
+  return match && name ? `${name} ${match[1]}` : monthKey;
+}

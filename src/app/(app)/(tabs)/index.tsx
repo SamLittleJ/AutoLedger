@@ -5,7 +5,8 @@ import { Button } from "@/components/button";
 import { ExpenseRow } from "@/components/expense-row";
 import { ErrorView, LoadingView, NoVehicleView } from "@/components/state-views";
 import { colors } from "@/components/theme";
-import { latestExpenses, totalCost } from "@/lib/calc";
+import { latestExpenses, monthlyTotal, totalCost } from "@/lib/calc";
+import { currentMonthKey, formatMonth } from "@/lib/dates";
 import { fetchVehicleWithExpenses } from "@/lib/expenses";
 import { formatKm, formatRon } from "@/lib/format";
 import { useFocusLoad } from "@/lib/use-focus-load";
@@ -22,6 +23,8 @@ export default function SummaryScreen() {
   if (!vehicle) return <NoVehicleView />;
 
   const latest = latestExpenses(expenses, LATEST_COUNT);
+  // Recomputed on every render, so a reload after midnight picks the new month.
+  const month = currentMonthKey(new Date());
 
   return (
     <ScrollView
@@ -38,8 +41,14 @@ export default function SummaryScreen() {
           <Text style={styles.muted}>{formatKm(vehicle.current_odometer)}</Text>
         </View>
         <View style={styles.card}>
-          <Text style={styles.muted}>Total cheltuit</Text>
-          <Text style={styles.total}>{formatRon(totalCost(expenses))}</Text>
+          <Text style={styles.muted}>Cheltuit luna aceasta</Text>
+          <Text style={styles.total}>{formatRon(monthlyTotal(expenses, month))}</Text>
+          <Text style={styles.muted}>{formatMonth(month)}</Text>
+          <View style={styles.divider} />
+          <Text style={styles.muted}>
+            Total cheltuit:{" "}
+            <Text style={styles.overall}>{formatRon(totalCost(expenses))}</Text>
+          </Text>
         </View>
         <Button title="Adaugă cheltuială" onPress={() => router.push("/expense/new")} />
       </View>
@@ -82,6 +91,8 @@ const styles = StyleSheet.create({
   vehicleName: { color: colors.text, fontSize: 22, fontWeight: "700" },
   muted: { color: colors.muted, fontSize: 16 },
   total: { color: colors.text, fontSize: 28, fontWeight: "700" },
+  overall: { color: colors.text, fontWeight: "600" },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.divider, marginVertical: 8 },
   sectionTitle: { color: colors.text, fontSize: 18, fontWeight: "700" },
   empty: { color: colors.muted, fontSize: 16, lineHeight: 24 },
 });
