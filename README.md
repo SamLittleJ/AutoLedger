@@ -12,7 +12,10 @@ schema, and documentation. The user interface is in Romanian.
 ## Status
 
 Work in progress, following a 5-week plan. Week 1 (authentication and the
-`vehicles` table with Row Level Security) is complete and verified on a phone. The full plan, including
+`vehicles` table with Row Level Security) is complete and verified on a phone.
+Week 2 (the `expenses` table with RLS and the odometer trigger, tab navigation,
+the vehicle screen, adding and listing expenses) is complete: verified on a
+phone, and the cross-account RLS check passes. The full plan, including
 design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
 ## Tech stack
