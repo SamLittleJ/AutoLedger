@@ -95,7 +95,8 @@ tries to read, insert, update and delete A's vehicle and expenses as B,
 including inserting an expense on A's vehicle and moving one of B's expenses
 onto it. Every attempt must fail or affect zero rows; an anonymous client must
 see nothing. It also checks that the odometer trigger raises
-`current_odometer` only for a higher reading. Test rows are removed at the end.
+`current_odometer` only for a higher reading, both when an expense is added and
+when it is edited, and never lowers it. Test rows are removed at the end.
 
 ```bash
 cp .env.test.example .env.test
@@ -108,6 +109,11 @@ writes data. Run it again after any change to policies or the trigger.
 
 The lint, type and unit checks run in GitHub Actions on every push and pull request
 (see [.github/workflows/ci.yml](.github/workflows/ci.yml)).
+
+Expo Router's typed routes are generated in `.expo/types/` only while
+`npx expo start` runs. After adding a screen, start the dev server once before
+`npx tsc --noEmit`, or the new route fails to type-check locally. CI has no
+`.expo/` folder, so it does not check route names.
 
 ## Project structure
 
@@ -132,6 +138,8 @@ docs/
 - The app works online only; there is no offline mode.
 - One vehicle per account.
 - Email confirmation links do not open the app (no deep link). Out of scope.
+- Delete confirmations use `Alert.alert`, which shows no dialog on web. The
+  app targets Android and iOS through Expo Go.
 
 ## License
 
