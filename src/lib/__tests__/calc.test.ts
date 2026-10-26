@@ -1,4 +1,4 @@
-import { latestExpenses, totalCost } from "@/lib/calc";
+import { filterByCategory, latestExpenses, totalCost } from "@/lib/calc";
 
 describe("totalCost", () => {
   it("returns 0 for an empty list", () => {
@@ -61,5 +61,25 @@ describe("latestExpenses", () => {
     expect(latestExpenses(expenses, 5).map((e) => e.id)).toEqual(["b", "a"]);
     expect(expenses.map((e) => e.id)).toEqual(["a", "b"]);
     expect(latestExpenses([], 5)).toEqual([]);
+  });
+});
+
+describe("filterByCategory", () => {
+  const expenses = [
+    { id: "a", category: "fuel" },
+    { id: "b", category: "service" },
+    { id: "c", category: "fuel" },
+  ];
+
+  it("keeps only the chosen category, in the original order", () => {
+    expect(filterByCategory(expenses, "fuel").map((e) => e.id)).toEqual(["a", "c"]);
+  });
+
+  it("returns everything for null", () => {
+    expect(filterByCategory(expenses, null).map((e) => e.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("returns an empty list when nothing matches", () => {
+    expect(filterByCategory(expenses, "accessories")).toEqual([]);
   });
 });

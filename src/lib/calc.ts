@@ -1,3 +1,5 @@
+import type { ExpenseCategory } from "@/lib/categories";
+
 // Pure totals (docs/PLAN.md D4). Costs are numeric(10,2) in the database;
 // sums are done in whole bani so float rounding never leaks into totals.
 
@@ -22,4 +24,14 @@ export function compareHistoryOrder(a: WithOrder, b: WithOrder): number {
 
 export function latestExpenses<T extends WithOrder>(expenses: readonly T[], count: number): T[] {
   return [...expenses].sort(compareHistoryOrder).slice(0, count);
+}
+
+// null means "all categories".
+export function filterByCategory<T extends { category: string }>(
+  expenses: readonly T[],
+  category: ExpenseCategory | null,
+): T[] {
+  return category === null
+    ? [...expenses]
+    : expenses.filter((expense) => expense.category === category);
 }
