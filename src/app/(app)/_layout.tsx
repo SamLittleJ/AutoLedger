@@ -10,6 +10,10 @@ export default function AppLayout() {
         name="expense/new"
         options={{ title: "Cheltuială nouă", headerBackTitle: "Înapoi" }}
       />
+      <Stack.Screen
+        name="expense/[id]"
+        options={{ title: "Editează cheltuiala", headerBackTitle: "Înapoi" }}
+      />
     </Stack>
   );
 }

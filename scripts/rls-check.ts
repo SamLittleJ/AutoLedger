@@ -211,9 +211,28 @@ async function main() {
     odometer = await readOdometer(a, vehicleA.id);
     report(odometer === higher, "a lower reading leaves it unchanged", `got ${odometer}`);
 
-    createdA.push((await insertExpense(a, vehicleA.id, null)).id);
+    const withoutReading = await insertExpense(a, vehicleA.id, null);
+    createdA.push(withoutReading.id);
     odometer = await readOdometer(a, vehicleA.id);
     report(odometer === higher, "no reading leaves it unchanged", `got ${odometer}`);
+
+    // The edit screen updates expenses, which fires the UPDATE OF odometer branch.
+    const edited = higher + 1000;
+    const raise = await a
+      .from("expenses")
+      .update({ odometer: edited })
+      .eq("id", withoutReading.id);
+    if (raise.error) throw raise.error;
+    odometer = await readOdometer(a, vehicleA.id);
+    report(odometer === edited, "editing to a higher reading raises it", `got ${odometer}`);
+
+    const lower = await a
+      .from("expenses")
+      .update({ odometer: higher - 500 })
+      .eq("id", withoutReading.id);
+    if (lower.error) throw lower.error;
+    odometer = await readOdometer(a, vehicleA.id);
+    report(odometer === edited, "editing to a lower reading never lowers it", `got ${odometer}`);
   } finally {
     const cleanupErrors = [
       createdA.length > 0 && (await a.from("expenses").delete().in("id", createdA)).error,

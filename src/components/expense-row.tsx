@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors } from "@/components/theme";
 import { getCategoryLabel } from "@/lib/categories";
@@ -11,7 +12,12 @@ export function ExpenseRow({ expense }: { expense: Expense }) {
   if (expense.odometer !== null) details.push(formatKm(expense.odometer));
 
   return (
-    <View style={styles.row}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityHint="Deschide cheltuiala pentru editare"
+      onPress={() => router.push({ pathname: "/expense/[id]", params: { id: expense.id } })}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+    >
       <View style={styles.main}>
         <Text style={styles.description} numberOfLines={2}>
           {expense.description}
@@ -24,7 +30,7 @@ export function ExpenseRow({ expense }: { expense: Expense }) {
         )}
       </View>
       <Text style={styles.cost}>{formatRon(expense.cost)}</Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -39,6 +45,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.divider,
     backgroundColor: colors.background,
   },
+  pressed: { backgroundColor: colors.surface },
   main: { flex: 1, gap: 4 },
   description: { color: colors.text, fontSize: 16, fontWeight: "600" },
   details: { color: colors.muted, fontSize: 14 },

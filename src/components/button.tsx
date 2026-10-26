@@ -5,7 +5,7 @@ import { colors } from "@/components/theme";
 type ButtonProps = {
   title: string;
   onPress: () => void;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "danger";
   disabled?: boolean;
   isLoading?: boolean;
 };
@@ -18,6 +18,7 @@ export function Button({
   isLoading = false,
 }: ButtonProps) {
   const isPrimary = variant === "primary";
+  const outlineColor = variant === "danger" ? colors.error : colors.primary;
   const isDisabled = disabled || isLoading;
 
   return (
@@ -28,14 +29,14 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        isPrimary ? styles.primary : styles.secondary,
+        isPrimary ? styles.primary : [styles.outline, { borderColor: outlineColor }],
         (pressed || isDisabled) && styles.dimmed,
       ]}
     >
       {isLoading && (
-        <ActivityIndicator color={isPrimary ? colors.primaryText : colors.primary} />
+        <ActivityIndicator color={isPrimary ? colors.primaryText : outlineColor} />
       )}
-      <Text style={[styles.text, isPrimary ? styles.primaryText : styles.secondaryText]}>
+      <Text style={[styles.text, { color: isPrimary ? colors.primaryText : outlineColor }]}>
         {title}
       </Text>
     </Pressable>
@@ -53,13 +54,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   primary: { backgroundColor: colors.primary },
-  secondary: {
-    backgroundColor: colors.background,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
+  outline: { backgroundColor: colors.background, borderWidth: 1 },
   dimmed: { opacity: 0.6 },
   text: { fontSize: 16, fontWeight: "600" },
-  primaryText: { color: colors.primaryText },
-  secondaryText: { color: colors.primary },
 });
