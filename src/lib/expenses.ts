@@ -1,5 +1,6 @@
 import type { ExpenseInput } from "@/lib/expense-form";
 import { supabase } from "@/lib/supabase";
+import { fetchVehicle } from "@/lib/vehicles";
 import type { Tables } from "@/types/database";
 
 export type Expense = Tables<"expenses">;
@@ -14,6 +15,13 @@ export async function fetchExpenses(vehicleId: string): Promise<Expense[]> {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data;
+}
+
+// Shared by the summary and history screens.
+export async function fetchVehicleWithExpenses() {
+  const vehicle = await fetchVehicle();
+  const expenses = vehicle ? await fetchExpenses(vehicle.id) : [];
+  return { vehicle, expenses };
 }
 
 // Null when the expense does not exist or belongs to another account (RLS).

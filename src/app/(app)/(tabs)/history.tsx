@@ -5,18 +5,11 @@ import { Button } from "@/components/button";
 import { ExpenseRow } from "@/components/expense-row";
 import { ErrorView, LoadingView, NoVehicleView } from "@/components/state-views";
 import { colors } from "@/components/theme";
-import { fetchExpenses } from "@/lib/expenses";
+import { fetchVehicleWithExpenses } from "@/lib/expenses";
 import { useFocusLoad } from "@/lib/use-focus-load";
-import { fetchVehicle } from "@/lib/vehicles";
-
-async function loadHistory() {
-  const vehicle = await fetchVehicle();
-  const expenses = vehicle ? await fetchExpenses(vehicle.id) : [];
-  return { vehicle, expenses };
-}
 
 export default function HistoryScreen() {
-  const { state, isRefreshing, reload } = useFocusLoad(loadHistory);
+  const { state, isRefreshing, reload } = useFocusLoad(fetchVehicleWithExpenses);
 
   if (state.status === "loading") return <LoadingView />;
   if (state.status === "error") return <ErrorView message={state.message} onRetry={reload} />;
