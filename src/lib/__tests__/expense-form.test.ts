@@ -1,4 +1,5 @@
 import {
+  deleteConfirmationMessage,
   expenseToFormValues,
   validateExpenseForm,
   type ExpenseFormValues,
@@ -108,5 +109,17 @@ describe("expenseToFormValues", () => {
         data: expense,
       });
     }
+  });
+});
+
+describe("deleteConfirmationMessage", () => {
+  it("names the description, cost and date", () => {
+    expect(
+      deleteConfirmationMessage({
+        description: "Schimb ulei",
+        cost: 1350,
+        performed_on: "2026-03-12",
+      }),
+    ).toBe("„Schimb ulei”, 1.350,00 RON, 12.03.2026.\nAcțiunea nu poate fi anulată.");
   });
 });

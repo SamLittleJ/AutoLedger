@@ -1,5 +1,6 @@
 import { isExpenseCategory, type ExpenseCategory } from "@/lib/categories";
-import { isValidIsoDate } from "@/lib/dates";
+import { formatDisplayDate, isValidIsoDate } from "@/lib/dates";
+import { formatRon } from "@/lib/format";
 import { parseCost, parseOdometer } from "@/lib/numbers";
 import type { Tables } from "@/types/database";
 
@@ -91,4 +92,14 @@ export function expenseToFormValues(expense: StoredExpense): ExpenseFormValues {
     odometer: expense.odometer === null ? "" : String(expense.odometer),
     notes: expense.notes ?? "",
   };
+}
+
+// Body of the delete confirmation, so the user sees which expense goes.
+export function deleteConfirmationMessage(
+  expense: Pick<StoredExpense, "description" | "cost" | "performed_on">,
+): string {
+  return (
+    `„${expense.description}”, ${formatRon(expense.cost)}, ` +
+    `${formatDisplayDate(expense.performed_on)}.\nAcțiunea nu poate fi anulată.`
+  );
 }

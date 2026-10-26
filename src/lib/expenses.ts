@@ -41,3 +41,9 @@ export async function updateExpense(id: string, input: ExpenseInput): Promise<vo
     .single();
   if (error) throw error;
 }
+
+// Deleting a row that is already gone is not an error: the outcome is the same.
+export async function deleteExpense(id: string): Promise<void> {
+  const { error } = await supabase.from("expenses").delete().eq("id", id);
+  if (error) throw error;
+}

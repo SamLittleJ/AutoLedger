@@ -1,13 +1,14 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 import { Button } from "@/components/button";
 import { ExpenseForm } from "@/components/expense-form";
 import { ErrorView, LoadingView } from "@/components/state-views";
 import { colors } from "@/components/theme";
-import { expenseToFormValues } from "@/lib/expense-form";
-import { fetchExpense, updateExpense, type Expense } from "@/lib/expenses";
+import { getDataErrorMessage } from "@/lib/data-errors";
+import { deleteConfirmationMessage, expenseToFormValues } from "@/lib/expense-form";
+import { deleteExpense, fetchExpense, updateExpense, type Expense } from "@/lib/expenses";
 import { useFocusLoad } from "@/lib/use-focus-load";
 
 export default function EditExpenseScreen() {
@@ -23,6 +24,29 @@ export default function EditExpenseScreen() {
 }
 
 function EditExpenseForm({ expense }: { expense: Expense }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  async function performDelete() {
+    setDeleteError(null);
+    setIsDeleting(true);
+    try {
+      await deleteExpense(expense.id);
+      router.back();
+    } catch (error) {
+      setDeleteError(getDataErrorMessage(error));
+      setIsDeleting(false);
+    }
+  }
+
+  function confirmDelete() {
+    if (isDeleting) return;
+    Alert.alert("Ștergi cheltuiala?", deleteConfirmationMessage(expense), [
+      { text: "Anulează", style: "cancel" },
+      { text: "Șterge", style: "destructive", onPress: performDelete },
+    ]);
+  }
+
   return (
     <ExpenseForm
       initialValues={expenseToFormValues(expense)}
@@ -32,6 +56,21 @@ function EditExpenseForm({ expense }: { expense: Expense }) {
         await updateExpense(expense.id, input);
         router.back();
       }}
+      footer={
+        <>
+          {deleteError && (
+            <Text accessibilityRole="alert" style={styles.error}>
+              {deleteError}
+            </Text>
+          )}
+          <Button
+            title={isDeleting ? "Se șterge…" : "Șterge cheltuiala"}
+            variant="danger"
+            onPress={confirmDelete}
+            isLoading={isDeleting}
+          />
+        </>
+      }
     />
   );
 }
@@ -57,4 +96,5 @@ const styles = StyleSheet.create({
   },
   title: { color: colors.text, fontSize: 20, fontWeight: "700", textAlign: "center" },
   text: { color: colors.muted, fontSize: 16, lineHeight: 24, textAlign: "center" },
+  error: { color: colors.error, fontSize: 16, lineHeight: 24 },
 });
