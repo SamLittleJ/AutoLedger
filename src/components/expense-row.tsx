@@ -48,7 +48,7 @@ const createStyles = ({ colors }: AppTheme) =>
       alignItems: "flex-start",
       gap: space.md,
       paddingVertical: space.md,
-      paddingHorizontal: space.lg,
+      paddingHorizontal: space.xl,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors.divider,
       backgroundColor: colors.background,
@@ -58,5 +58,10 @@ const createStyles = ({ colors }: AppTheme) =>
     description: { color: colors.text, fontSize: fontSize.md, fontWeight: fontWeight.semibold },
     details: { color: colors.muted, fontSize: fontSize.sm },
     notes: { color: colors.muted, fontSize: fontSize.sm, fontStyle: "italic" },
-    cost: { color: colors.text, fontSize: fontSize.md, fontWeight: fontWeight.semibold },
+    cost: {
+      color: colors.text,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold,
+      fontVariant: ["tabular-nums"],
+    },
   });

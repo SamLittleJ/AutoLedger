@@ -19,7 +19,7 @@ export default function TabsLayout() {
   const { colors } = useAppTheme();
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: colors.primary }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: colors.accent }}>
       <Tabs.Screen
         name="index"
         options={{ title: "Rezumat", tabBarIcon: tabIcon("speedometer-outline") }}

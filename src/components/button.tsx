@@ -29,7 +29,7 @@ export function Button({
   const { colors } = useAppTheme();
   const styles = useThemedStyles(createStyles);
   const isPrimary = variant === "primary";
-  const outlineColor = variant === "danger" ? colors.error : colors.primary;
+  const outlineColor = variant === "danger" ? colors.error : colors.accent;
   const isDisabled = disabled || isLoading;
 
   return (
@@ -57,7 +57,7 @@ export function Button({
 const createStyles = ({ colors }: AppTheme) =>
   StyleSheet.create({
     button: {
-      borderRadius: radius.sm,
+      borderRadius: radius.md,
       minHeight: touchSize.comfortable,
       padding: space.md,
       flexDirection: "row",

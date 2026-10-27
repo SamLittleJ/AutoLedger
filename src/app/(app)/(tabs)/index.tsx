@@ -42,7 +42,7 @@ export default function SummaryScreen() {
       refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={reload} />}
     >
       <View style={styles.padded}>
-        <View style={styles.card}>
+        <View style={styles.vehicle}>
           <Text style={styles.vehicleName}>
             {vehicle.make} {vehicle.model}
             {vehicle.year !== null && ` (${vehicle.year})`}
@@ -54,10 +54,10 @@ export default function SummaryScreen() {
           <Text style={styles.total}>{formatRon(monthlyTotal(expenses, month))}</Text>
           <Text style={styles.muted}>{formatMonth(month)}</Text>
           <View style={styles.divider} />
-          <Text style={styles.muted}>
-            Total cheltuit:{" "}
+          <View style={styles.overallRow}>
+            <Text style={styles.muted}>Total cheltuit</Text>
             <Text style={styles.overall}>{formatRon(totalCost(expenses))}</Text>
-          </Text>
+          </View>
         </View>
         <Button title="Adaugă cheltuială" onPress={() => router.push("/expense/new")} />
       </View>
@@ -89,10 +89,11 @@ const createStyles = ({ colors }: AppTheme) =>
   StyleSheet.create({
     screen: { flex: 1, backgroundColor: colors.background },
     content: { paddingVertical: space.x2l, gap: space.lg },
-    padded: { paddingHorizontal: space.x2l, gap: space.lg },
+    padded: { paddingHorizontal: space.xl, gap: space.lg },
+    vehicle: { gap: space.xs },
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius.md,
+      borderRadius: radius.lg,
       borderWidth: 1,
       borderColor: colors.divider,
       padding: space.xl,
@@ -100,8 +101,19 @@ const createStyles = ({ colors }: AppTheme) =>
     },
     vehicleName: { color: colors.text, fontSize: fontSize.x2l, fontWeight: fontWeight.bold },
     muted: { color: colors.muted, fontSize: fontSize.md },
-    total: { color: colors.text, fontSize: fontSize.x4l, fontWeight: fontWeight.bold },
-    overall: { color: colors.text, fontWeight: fontWeight.semibold },
+    total: {
+      color: colors.text,
+      fontSize: fontSize.display,
+      fontWeight: fontWeight.bold,
+      fontVariant: ["tabular-nums"],
+    },
+    overallRow: { flexDirection: "row", justifyContent: "space-between", gap: space.md },
+    overall: {
+      color: colors.text,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold,
+      fontVariant: ["tabular-nums"],
+    },
     divider: {
       height: StyleSheet.hairlineWidth,
       backgroundColor: colors.divider,

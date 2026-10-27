@@ -68,7 +68,7 @@ const createStyles = ({ colors }: AppTheme) =>
   StyleSheet.create({
     screen: { flex: 1, backgroundColor: colors.background },
     header: { paddingVertical: space.lg, gap: space.md },
-    padded: { paddingHorizontal: space.lg },
+    padded: { paddingHorizontal: space.xl },
     filteredEmpty: { paddingHorizontal: space.x2l, paddingBottom: space.x2l },
     empty: {
       color: colors.muted,
