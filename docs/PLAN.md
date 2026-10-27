@@ -329,7 +329,7 @@ Deciziile de mai jos completează sau înlocuiesc punctele indicate. Secțiunile
 - „Cheltuit luna aceasta” este cifra principală din Rezumat, cu numele lunii dedesubt; totalul general apare sub ea.
 - Limite de lungime doar în formulare: descriere 120, observații 1000, marcă și model câte 50 de caractere. Costul 0 este permis.
 - Data se introduce ca text `AAAA-LL-ZZ`, precompletată cu ziua curentă; un selector de dată rămâne extensie.
-- Aplicația folosește doar tema deschisă (`userInterfaceStyle: "light"`).
+- Aspectul urmează tema telefonului, deschisă sau întunecată (`userInterfaceStyle: "automatic"`), fără comutator în aplicație. Stilul „Albastru rafinat”: culorile de bază din `src/components/theme.ts`, fontul sistemului, iconiță proprie. Toate valorile de stil (culori, mărimi, spațieri, colțuri) stau în `theme.ts`.
 
 ### Teste și demonstrație
 

@@ -21,6 +21,7 @@ a clean schema, and documentation. The user interface is in Romanian.
 - History ordered by date, filterable by category.
 - Clear messages for validation, network and server errors; forms keep their
   values for a retry.
+- Light and dark appearance, following the phone's setting.
 
 ## Status
 
@@ -255,7 +256,6 @@ docs/
   (no deep link).
 - The app works online only; there is no offline mode.
 - One vehicle per account.
-- Light appearance only; the app does not follow the phone's dark mode.
 - Dates are typed as `AAAA-LL-ZZ` (today is prefilled); there is no date picker.
 - Sign-out works offline in the usual case, but after more than an hour without
   a connection the access token has expired and signing out needs the network

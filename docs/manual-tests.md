@@ -38,6 +38,12 @@ Turn airplane mode on after the app has loaded, unless a step says otherwise.
 | E5 | Delete an expense and confirm. | The dialog names the description, cost and date; the expense disappears and the totals drop. |
 | E6 | In "Istoric", pick a category, open and close an expense. | The filter is still active; a category without expenses shows "Arată toate". |
 
+## Appearance
+
+| # | Steps | Expected |
+| --- | --- | --- |
+| T1 | Switch the phone to dark mode, then back to light, with the app open. Visit every screen, open the delete confirmation. | The app follows the phone right away. In both modes: text is readable on every screen, headers, tab bar and status bar match the screen, inputs have a visible border, the active tab and outline buttons use the accent color. |
+
 ## Runs
 
 | Date | Device | Result |
