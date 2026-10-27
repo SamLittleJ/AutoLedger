@@ -48,7 +48,7 @@ const createStyles = ({ colors }: AppTheme) =>
     input: {
       borderWidth: 1,
       borderColor: colors.border,
-      borderRadius: radius.sm,
+      borderRadius: radius.md,
       padding: space.md,
       minHeight: touchSize.comfortable,
       fontSize: fontSize.md,
