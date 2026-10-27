@@ -331,6 +331,12 @@ Deciziile de mai jos completează sau înlocuiesc punctele indicate. Secțiunile
 - Data se introduce ca text `AAAA-LL-ZZ`, precompletată cu ziua curentă; un selector de dată rămâne extensie.
 - Aspectul urmează tema telefonului, deschisă sau întunecată (`userInterfaceStyle: "automatic"`), fără comutator în aplicație. Stilul „Albastru rafinat”: culorile de bază din `src/components/theme.ts`, fontul sistemului, iconiță proprie. Toate valorile de stil (culori, mărimi, spațieri, colțuri) stau în `theme.ts`.
 
+### Cont și email (după versiunea 1)
+
+- **Ștergerea contului:** din „Mașina mea”, pe un ecran care cere din nou parola. Aplicația verifică parola, apoi apelează Edge Function `delete-account`, care șterge cu `auth.admin.deleteUser` doar utilizatorul care o apelează. Cheia secretă rămâne în Supabase. Mașina și cheltuielile se șterg prin `ON DELETE CASCADE`. După ștergere, ecranul de conectare arată „Contul și datele tale au fost șterse.”
+- **Resetarea parolei și confirmarea emailului** (urmează): cod de 6 cifre în email, introdus în aplicație (`verifyOtp`), fără deep link; SMTP propriu prin Resend, cu un domeniu verificat și expeditorul `no-reply@<domeniu>`.
+- **Idei, în afara planului:** distribuție prin TestFlight (cere Apple Developer Program, 99 $ pe an) și APK Android prin EAS (gratuit, dar fără un telefon Android de test).
+
 ### Teste și demonstrație
 
 - Testele manuale de pe telefon (cont, sesiune, lipsa conexiunii, fluxul de cheltuieli) sunt în `docs/manual-tests.md`, cu un jurnal al rulărilor.

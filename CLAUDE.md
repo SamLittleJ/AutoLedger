@@ -28,11 +28,12 @@ Aplicație mobilă pentru evidența cheltuielilor unei mașini (revizii, repara�
 - **Rezumat lunar:** „Cheltuit luna aceasta” = luna calendaristică curentă, după data locală a telefonului. Se calculează pe client în `src/lib/calc.ts`, comparând prefixul `AAAA-LL` din șirul `performed_on`; nu parsa `performed_on` în `Date`. Doar luna curentă și totalul general.
 - **Confirmare email:** rămâne dezactivată (PLAN §15). Serviciul de email implicit Supabase trimite doar membrilor echipei proiectului; activarea ar cere SMTP propriu. Fără pagină statică, fără deep link.
 - **Totaluri:** calculate pe client, în funcții pure din `src/lib/calc.ts`, cu teste unitare (inclusiv limitele lunii și trecerea dintre ani).
+- **Ștergerea contului:** din „Mașina mea”, cu parola reintrodusă. O face Edge Function `delete-account` (`auth.admin.deleteUser` pe utilizatorul care o apelează); cheia secretă rămâne doar în Supabase. Mașina și cheltuielile se șterg în cascadă.
 - **Date din viitor:** respinse în formular, nu prin CHECK în baza de date.
 
 ## În afara scopului
 
-Fotografii, notificări, offline, mai multe mașini, export PDF, AI, deep link, ștergerea contului sau a mașinii, litri/preț pe litru/consum mediu, navigare la luni anterioare. Nu le implementa și nu pregăti structuri pentru ele fără o cerere explicită.
+Fotografii, notificări, offline, mai multe mașini, export PDF, AI, deep link, ștergerea mașinii, litri/preț pe litru/consum mediu, navigare la luni anterioare. Nu le implementa și nu pregăti structuri pentru ele fără o cerere explicită.
 
 ## Convenții
 

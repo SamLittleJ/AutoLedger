@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -26,6 +26,7 @@ import {
 } from "@/components/theme";
 import { useAuth } from "@/lib/auth";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
+import { clearSignedOutNotice, peekSignedOutNotice } from "@/lib/signed-out-notice";
 import { supabase } from "@/lib/supabase";
 
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
@@ -38,7 +39,9 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  // E.g. "account deleted", left by the flow that signed the user out.
+  const [message, setMessage] = useState<string | null>(peekSignedOutNotice);
+  useEffect(clearSignedOutNotice, []);
 
   async function handleSubmit() {
     if (isSubmitting) return;
