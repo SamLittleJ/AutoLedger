@@ -1,4 +1,10 @@
-import { formatDisplayDate, isValidIsoDate, toLocalIsoDate } from "@/lib/dates";
+import {
+  currentMonthKey,
+  formatDisplayDate,
+  formatMonth,
+  isValidIsoDate,
+  toLocalIsoDate,
+} from "@/lib/dates";
 
 describe("toLocalIsoDate", () => {
   it("uses the local calendar day", () => {
@@ -26,5 +32,24 @@ describe("isValidIsoDate", () => {
 describe("formatDisplayDate", () => {
   it("formats as DD.MM.YYYY", () => {
     expect(formatDisplayDate("2026-10-05")).toBe("05.10.2026");
+  });
+});
+
+describe("currentMonthKey", () => {
+  it("uses the local month around the new year", () => {
+    expect(currentMonthKey(new Date(2026, 11, 31, 23, 59))).toBe("2026-12");
+    expect(currentMonthKey(new Date(2027, 0, 1, 0, 0))).toBe("2027-01");
+  });
+});
+
+describe("formatMonth", () => {
+  it("names the month in Romanian, lowercase", () => {
+    expect(formatMonth("2026-01")).toBe("ianuarie 2026");
+    expect(formatMonth("2026-12")).toBe("decembrie 2026");
+  });
+
+  it("returns unexpected input unchanged", () => {
+    expect(formatMonth("2026-13")).toBe("2026-13");
+    expect(formatMonth("octombrie")).toBe("octombrie");
   });
 });

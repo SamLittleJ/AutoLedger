@@ -17,7 +17,10 @@ Week 2 (the `expenses` table with RLS and the odometer trigger, tab navigation,
 the vehicle screen, adding and listing expenses) is complete: verified on a
 phone, and the cross-account RLS check passes. Week 3 (editing, deleting with
 confirmation, the summary with the total spent and the latest five expenses,
-and filtering history by category) is complete and verified on a phone. The full plan, including
+and filtering history by category) is complete and verified on a phone. Week 4
+("Cheltuit luna aceasta" with month-boundary tests, form length limits, a
+neutral server error message, and the manual phone test checklist) is complete;
+every manual test passes. The full plan, including
 design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
 ## Tech stack
@@ -117,6 +120,11 @@ Expo Router's typed routes are generated in `.expo/types/` only while
 `npx tsc --noEmit`, or the new route fails to type-check locally. CI has no
 `.expo/` folder, so it does not check route names.
 
+### Manual tests
+
+Phone checks (account, session, no connection, expense flow) are listed in
+[docs/manual-tests.md](docs/manual-tests.md), with a log of past runs.
+
 ## Project structure
 
 ```
@@ -131,6 +139,7 @@ supabase/
   migrations/  Versioned SQL migrations (schema, RLS policies)
 docs/
   PLAN.md       Implementation plan and design decisions (Romanian)
+  manual-tests.md  Phone test checklist and run log
 ```
 
 ## Known limitations
@@ -140,6 +149,9 @@ docs/
 - The app works online only; there is no offline mode.
 - One vehicle per account.
 - Email confirmation links do not open the app (no deep link). Out of scope.
+- Sign-out works offline in the usual case, but after more than an hour without
+  a connection the access token has expired and signing out needs the network
+  (supabase-js refreshes the session first). The app shows a connection message.
 - Delete confirmations use `Alert.alert`, which shows no dialog on web. The
   app targets Android and iOS through Expo Go.
 

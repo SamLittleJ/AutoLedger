@@ -26,7 +26,8 @@ export function getDataErrorMessage(error: unknown): string {
       return "Sesiunea a expirat. Conectează-te din nou.";
   }
 
-  return "Nu am putut salva datele. Încearcă din nou în câteva momente.";
+  // Used for loading, saving and deleting alike, so it names no action.
+  return "A apărut o problemă la server. Încearcă din nou în câteva momente.";
 }
 
 const NETWORK_MESSAGE =

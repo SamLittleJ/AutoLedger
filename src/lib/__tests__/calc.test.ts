@@ -1,4 +1,4 @@
-import { filterByCategory, latestExpenses, totalCost } from "@/lib/calc";
+import { filterByCategory, latestExpenses, monthlyTotal, totalCost } from "@/lib/calc";
 
 describe("totalCost", () => {
   it("returns 0 for an empty list", () => {
@@ -81,5 +81,41 @@ describe("filterByCategory", () => {
 
   it("returns an empty list when nothing matches", () => {
     expect(filterByCategory(expenses, "accessories")).toEqual([]);
+  });
+});
+
+describe("monthlyTotal", () => {
+  const on = (performed_on: string, cost: number) => ({ performed_on, cost });
+
+  it("includes the first and the last day of the month", () => {
+    expect(monthlyTotal([on("2026-10-01", 100), on("2026-10-31", 50)], "2026-10")).toBe(150);
+  });
+
+  it("excludes the previous and the next month", () => {
+    const expenses = [on("2026-09-30", 1), on("2026-10-15", 40), on("2026-11-01", 2)];
+    expect(monthlyTotal(expenses, "2026-10")).toBe(40);
+  });
+
+  it("returns 0 for a month without expenses and for an empty list", () => {
+    expect(monthlyTotal([on("2026-09-15", 10)], "2026-10")).toBe(0);
+    expect(monthlyTotal([], "2026-10")).toBe(0);
+  });
+
+  it("separates December and January across the new year", () => {
+    const expenses = [on("2026-12-31", 300), on("2027-01-01", 20), on("2026-01-10", 5)];
+    expect(monthlyTotal(expenses, "2026-12")).toBe(300);
+    expect(monthlyTotal(expenses, "2027-01")).toBe(20);
+  });
+
+  it("excludes the same month of another year", () => {
+    expect(monthlyTotal([on("2025-10-10", 99), on("2026-10-10", 1)], "2026-10")).toBe(1);
+  });
+
+  it("includes 29 February in a leap year", () => {
+    expect(monthlyTotal([on("2028-02-29", 75), on("2028-03-01", 1)], "2028-02")).toBe(75);
+  });
+
+  it("sums decimals without float drift", () => {
+    expect(monthlyTotal([on("2026-10-01", 0.1), on("2026-10-02", 0.2)], "2026-10")).toBe(0.3);
   });
 });

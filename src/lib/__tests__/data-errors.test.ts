@@ -18,6 +18,6 @@ describe("getDataErrorMessage", () => {
   });
 
   it("falls back to a generic message", () => {
-    expect(getDataErrorMessage({ code: "XX000" })).toMatch(/Nu am putut salva/);
+    expect(getDataErrorMessage({ code: "XX000" })).toMatch(/problemă la server/);
   });
 });

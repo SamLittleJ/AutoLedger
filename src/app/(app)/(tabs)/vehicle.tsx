@@ -101,6 +101,7 @@ function VehicleForm({ vehicle, savedMessage, onSaved, onEdit }: VehicleFormProp
         value={values.make}
         onChangeText={(text) => update("make", text)}
         error={errors.make}
+        maxLength={50}
         placeholder="ex.: Dacia"
         autoCapitalize="words"
       />
@@ -109,6 +110,7 @@ function VehicleForm({ vehicle, savedMessage, onSaved, onEdit }: VehicleFormProp
         value={values.model}
         onChangeText={(text) => update("model", text)}
         error={errors.model}
+        maxLength={50}
         placeholder="ex.: Logan"
         autoCapitalize="words"
       />

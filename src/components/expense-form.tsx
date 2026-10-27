@@ -84,6 +84,7 @@ export function ExpenseForm({
         onChangeText={(text) => update("description", text)}
         error={errors.description}
         placeholder="ex.: Schimb ulei și filtre"
+        maxLength={120}
         autoCapitalize="sentences"
       />
       <FormField
@@ -106,6 +107,7 @@ export function ExpenseForm({
         label="Observații (opțional)"
         value={values.notes}
         onChangeText={(text) => update("notes", text)}
+        maxLength={1000}
         multiline
         style={styles.notes}
       />
