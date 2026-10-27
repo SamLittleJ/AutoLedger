@@ -38,6 +38,13 @@ Turn airplane mode on after the app has loaded, unless a step says otherwise.
 | E5 | Delete an expense and confirm. | The dialog names the description, cost and date; the expense disappears and the totals drop. |
 | E6 | In "Istoric", pick a category, open and close an expense. | The filter is still active; a category without expenses shows "Arată toate". |
 
+## Account deletion
+
+| # | Steps | Expected |
+| --- | --- | --- |
+| D1 | With a throwaway account that has a vehicle and an expense: "Mașina mea" → "Șterge contul", enter a wrong password, then the right one. | The wrong password shows "Parola nu este corectă." and nothing is deleted. The right one returns to the sign-in screen with "Contul și datele tale au fost șterse."; signing in again with that account fails. In the Supabase dashboard the user, vehicle and expenses are gone. |
+| D2 | Airplane mode on, then "Șterge contul" with the right password. | A connection message; the account still exists. |
+
 ## Appearance
 
 | # | Steps | Expected |

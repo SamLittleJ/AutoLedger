@@ -22,6 +22,8 @@ a clean schema, and documentation. The user interface is in Romanian.
 - Clear messages for validation, network and server errors; forms keep their
   values for a retry.
 - Light and dark appearance, following the phone's setting.
+- Account deletion, confirmed with the password, removes the account, the
+  vehicle and every expense.
 
 ## Status
 
@@ -106,6 +108,10 @@ The project's own work is the data model and its guarantees, plus the app:
   column.
 - A cross-account script (`scripts/rls-check.ts`) verifies the isolation
   through the REST API, using only the publishable key (see below).
+- Account deletion runs in the `delete-account` Edge Function, the only code
+  that uses the project's secret key. It deletes the user who calls it (the
+  function takes no input) after the app re-checks the password; the vehicle
+  and expenses go with it through `ON DELETE CASCADE`.
 
 ## Tech stack
 
@@ -144,7 +150,13 @@ Apply the database migrations:
 npx supabase login
 npx supabase link --project-ref <ref>
 npx supabase db push
+npx supabase functions deploy delete-account --use-api
 ```
+
+`--use-api` bundles the function on Supabase's servers instead of in a local
+Docker container. Without it, on Fedora (Podman with SELinux enforcing) the
+container cannot read the project folder and the deploy fails with "entrypoint
+path does not exist".
 
 Disable "Confirm email" in the Supabase Auth settings. Supabase's built-in email
 service delivers only to the email addresses of the project's team members, so
@@ -201,7 +213,8 @@ npm test
 tries to read, insert, update and delete A's vehicle and expenses as B,
 including inserting an expense on A's vehicle and moving one of B's expenses
 onto it. Every attempt must fail or affect zero rows; an anonymous client must
-see nothing. It confirms that the database itself rejects a negative cost or
+see nothing, and the `delete-account` function must reject a call without a
+signed-in user. It confirms that the database itself rejects a negative cost or
 odometer sent directly through the API. It also checks that the odometer trigger raises
 `current_odometer` only for a higher reading, both when an expense is added and
 when it is edited, and never lowers it. Test rows are removed at the end.
@@ -241,6 +254,7 @@ scripts/
   seed-demo.ts  Resets the demo account's data
 supabase/
   migrations/  Versioned SQL migrations (schema, RLS policies)
+  functions/   Edge Functions (delete-account)
 docs/
   PLAN.md       Implementation plan and design decisions (Romanian)
   manual-tests.md  Phone test checklist and run log
@@ -260,6 +274,8 @@ docs/
 - Sign-out works offline in the usual case, but after more than an hour without
   a connection the access token has expired and signing out needs the network
   (supabase-js refreshes the session first). The app shows a connection message.
+- On web, account deletion fails: the Edge Function sends no CORS headers, so
+  the browser blocks the call. The app targets phones.
 - Delete confirmations use `Alert.alert`, which shows no dialog on web. The
   app targets Android and iOS through Expo Go.
 

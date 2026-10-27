@@ -14,6 +14,10 @@ export default function AppLayout() {
         name="expense/[id]"
         options={{ title: "Editează cheltuiala", headerBackTitle: "Înapoi" }}
       />
+      <Stack.Screen
+        name="account/delete"
+        options={{ title: "Ștergerea contului", headerBackTitle: "Înapoi" }}
+      />
     </Stack>
   );
 }

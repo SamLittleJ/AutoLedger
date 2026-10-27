@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -186,6 +187,12 @@ function SignOutSection() {
         variant="secondary"
         onPress={handleSignOut}
         isLoading={isSigningOut}
+      />
+      <Button
+        title="Șterge contul"
+        variant="danger"
+        onPress={() => router.push("/account/delete")}
+        disabled={isSigningOut}
       />
     </View>
   );

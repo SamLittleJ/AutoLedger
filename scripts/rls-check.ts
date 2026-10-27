@@ -200,6 +200,16 @@ async function main() {
     expectDenied("anon cannot read vehicles", await anon.from("vehicles").select("id"));
     expectDenied("anon cannot read expenses", await anon.from("expenses").select("id"));
 
+    // The function deletes whoever calls it, so a call without a user must
+    // never reach deleteUser.
+    const anonDelete = await anon.functions.invoke("delete-account", { method: "POST" });
+    const anonDeleteStatus = (anonDelete.error as { context?: Response } | null)?.context?.status;
+    report(
+      anonDeleteStatus === 401,
+      "anon cannot call delete-account",
+      anonDelete.error ? `status ${anonDeleteStatus ?? "unknown"}` : "the call succeeded",
+    );
+
     console.log("\nDatabase constraints (account A)");
 
     // The form rejects these too; here the API is called directly, so only
