@@ -4,8 +4,13 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 
 import { Button } from "@/components/button";
 import { ExpenseForm } from "@/components/expense-form";
-import { ErrorView, LoadingView } from "@/components/state-views";
-import { colors } from "@/components/theme";
+import { createStateViewStyles, ErrorView, LoadingView } from "@/components/state-views";
+import {
+  fontSize,
+  lineHeight,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 import { getDataErrorMessage } from "@/lib/data-errors";
 import { deleteConfirmationMessage, expenseToFormValues } from "@/lib/expense-form";
 import { deleteExpense, fetchExpense, updateExpense, type Expense } from "@/lib/expenses";
@@ -24,6 +29,7 @@ export default function EditExpenseScreen() {
 }
 
 function EditExpenseForm({ expense }: { expense: Expense }) {
+  const styles = useThemedStyles(createStyles);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -77,6 +83,8 @@ function EditExpenseForm({ expense }: { expense: Expense }) {
 
 // Also shown for another account's expense: RLS makes it look missing.
 function NotFoundView() {
+  const styles = useThemedStyles(createStateViewStyles);
+
   return (
     <View style={styles.center}>
       <Text style={styles.title}>Cheltuiala nu mai există</Text>
@@ -86,15 +94,7 @@ function NotFoundView() {
   );
 }
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-    gap: 16,
-    backgroundColor: colors.background,
-  },
-  title: { color: colors.text, fontSize: 20, fontWeight: "700", textAlign: "center" },
-  text: { color: colors.muted, fontSize: 16, lineHeight: 24, textAlign: "center" },
-  error: { color: colors.error, fontSize: 16, lineHeight: 24 },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    error: { color: colors.error, fontSize: fontSize.md, lineHeight: lineHeight.md },
+  });

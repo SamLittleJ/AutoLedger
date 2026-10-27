@@ -1,13 +1,20 @@
 import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  fontWeight,
+  space,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 import { getCategoryLabel } from "@/lib/categories";
 import { formatDisplayDate } from "@/lib/dates";
 import type { Expense } from "@/lib/expenses";
 import { formatKm, formatRon } from "@/lib/format";
 
 export function ExpenseRow({ expense }: { expense: Expense }) {
+  const styles = useThemedStyles(createStyles);
   const details = [formatDisplayDate(expense.performed_on), getCategoryLabel(expense.category)];
   if (expense.odometer !== null) details.push(formatKm(expense.odometer));
 
@@ -34,21 +41,22 @@ export function ExpenseRow({ expense }: { expense: Expense }) {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.divider,
-    backgroundColor: colors.background,
-  },
-  pressed: { backgroundColor: colors.surface },
-  main: { flex: 1, gap: 4 },
-  description: { color: colors.text, fontSize: 16, fontWeight: "600" },
-  details: { color: colors.muted, fontSize: 14 },
-  notes: { color: colors.muted, fontSize: 14, fontStyle: "italic" },
-  cost: { color: colors.text, fontSize: 16, fontWeight: "600" },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: space.md,
+      paddingVertical: space.md,
+      paddingHorizontal: space.lg,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.divider,
+      backgroundColor: colors.background,
+    },
+    pressed: { backgroundColor: colors.surface },
+    main: { flex: 1, gap: space.xs },
+    description: { color: colors.text, fontSize: fontSize.md, fontWeight: fontWeight.semibold },
+    details: { color: colors.muted, fontSize: fontSize.sm },
+    notes: { color: colors.muted, fontSize: fontSize.sm, fontStyle: "italic" },
+    cost: { color: colors.text, fontSize: fontSize.md, fontWeight: fontWeight.semibold },
+  });

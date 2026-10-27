@@ -5,7 +5,12 @@ import { Button } from "@/components/button";
 import { CategoryPicker } from "@/components/category-picker";
 import { FormField } from "@/components/form-field";
 import { FormScreen } from "@/components/form-screen";
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  lineHeight,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 import { getDataErrorMessage } from "@/lib/data-errors";
 import { toLocalIsoDate } from "@/lib/dates";
 import {
@@ -33,6 +38,7 @@ export function ExpenseForm({
   onSubmit,
   footer,
 }: ExpenseFormProps) {
+  const styles = useThemedStyles(createStyles);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<ExpenseFormErrors>({});
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -126,7 +132,8 @@ export function ExpenseForm({
   );
 }
 
-const styles = StyleSheet.create({
-  notes: { minHeight: 96, textAlignVertical: "top" },
-  error: { color: colors.error, fontSize: 16, lineHeight: 24 },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    notes: { minHeight: 96, textAlignVertical: "top" },
+    error: { color: colors.error, fontSize: fontSize.md, lineHeight: lineHeight.md },
+  });

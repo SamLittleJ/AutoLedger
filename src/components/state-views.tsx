@@ -2,9 +2,18 @@ import { router } from "expo-router";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { Button } from "@/components/button";
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  fontWeight,
+  lineHeight,
+  space,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 
 export function LoadingView() {
+  const styles = useThemedStyles(createStateViewStyles);
+
   return (
     <View style={styles.center}>
       <ActivityIndicator size="large" accessibilityLabel="Se încarcă" />
@@ -13,6 +22,8 @@ export function LoadingView() {
 }
 
 export function ErrorView({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const styles = useThemedStyles(createStateViewStyles);
+
   return (
     <View style={styles.center}>
       <Text accessibilityRole="alert" style={styles.error}>
@@ -24,6 +35,8 @@ export function ErrorView({ message, onRetry }: { message: string; onRetry: () =
 }
 
 export function NoVehicleView() {
+  const styles = useThemedStyles(createStateViewStyles);
+
   return (
     <View style={styles.center}>
       <Text style={styles.title}>Nu ai adăugat încă o mașină</Text>
@@ -35,15 +48,32 @@ export function NoVehicleView() {
   );
 }
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-    gap: 16,
-    backgroundColor: colors.background,
-  },
-  title: { color: colors.text, fontSize: 20, fontWeight: "700", textAlign: "center" },
-  text: { color: colors.muted, fontSize: 16, lineHeight: 24, textAlign: "center" },
-  error: { color: colors.error, fontSize: 16, lineHeight: 24, textAlign: "center" },
-});
+// Shared by full-screen messages elsewhere (e.g. a missing expense).
+export const createStateViewStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    center: {
+      flex: 1,
+      justifyContent: "center",
+      padding: space.x2l,
+      gap: space.lg,
+      backgroundColor: colors.background,
+    },
+    title: {
+      color: colors.text,
+      fontSize: fontSize.xl,
+      fontWeight: fontWeight.bold,
+      textAlign: "center",
+    },
+    text: {
+      color: colors.muted,
+      fontSize: fontSize.md,
+      lineHeight: lineHeight.md,
+      textAlign: "center",
+    },
+    error: {
+      color: colors.error,
+      fontSize: fontSize.md,
+      lineHeight: lineHeight.md,
+      textAlign: "center",
+    },
+  });

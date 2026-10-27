@@ -1,6 +1,16 @@
 import { StyleSheet, Text, TextInput, View, type TextInputProps } from "react-native";
 
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  fontWeight,
+  lineHeight,
+  radius,
+  space,
+  touchSize,
+  useAppTheme,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 
 type FormFieldProps = TextInputProps & {
   label: string;
@@ -9,6 +19,9 @@ type FormFieldProps = TextInputProps & {
 };
 
 export function FormField({ label, hint, error, style, ...inputProps }: FormFieldProps) {
+  const { colors } = useAppTheme();
+  const styles = useThemedStyles(createStyles);
+
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -28,20 +41,21 @@ export function FormField({ label, hint, error, style, ...inputProps }: FormFiel
   );
 }
 
-const styles = StyleSheet.create({
-  field: { gap: 6 },
-  label: { color: colors.text, fontSize: 16, fontWeight: "500" },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 48,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: colors.background,
-  },
-  inputError: { borderColor: colors.error },
-  hint: { color: colors.muted, fontSize: 14, lineHeight: 20 },
-  error: { color: colors.error, fontSize: 14, lineHeight: 20 },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    field: { gap: space.sm },
+    label: { color: colors.text, fontSize: fontSize.md, fontWeight: fontWeight.medium },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.sm,
+      padding: space.md,
+      minHeight: touchSize.comfortable,
+      fontSize: fontSize.md,
+      color: colors.text,
+      backgroundColor: colors.background,
+    },
+    inputError: { borderColor: colors.error },
+    hint: { color: colors.muted, fontSize: fontSize.sm, lineHeight: lineHeight.sm },
+    error: { color: colors.error, fontSize: fontSize.sm, lineHeight: lineHeight.sm },
+  });

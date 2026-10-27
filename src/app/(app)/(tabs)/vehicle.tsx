@@ -5,7 +5,14 @@ import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { FormScreen } from "@/components/form-screen";
 import { ErrorView, LoadingView } from "@/components/state-views";
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  fontWeight,
+  lineHeight,
+  space,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 import { useAuth } from "@/lib/auth";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { getDataErrorMessage } from "@/lib/data-errors";
@@ -21,6 +28,7 @@ import { fetchVehicle, saveVehicle, type Vehicle } from "@/lib/vehicles";
 export default function VehicleScreen() {
   const { state, reload } = useFocusLoad(fetchVehicle);
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
+  const styles = useThemedStyles(createStyles);
 
   if (state.status === "loading") return <LoadingView />;
   if (state.status === "error") return <ErrorView message={state.message} onRetry={reload} />;
@@ -64,6 +72,7 @@ type VehicleFormProps = {
 };
 
 function VehicleForm({ vehicle, savedMessage, onSaved, onEdit }: VehicleFormProps) {
+  const styles = useThemedStyles(createStyles);
   const [values, setValues] = useState(() => toFormValues(vehicle));
   const [errors, setErrors] = useState<VehicleFormErrors>({});
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -146,6 +155,7 @@ function VehicleForm({ vehicle, savedMessage, onSaved, onEdit }: VehicleFormProp
 }
 
 function SignOutSection() {
+  const styles = useThemedStyles(createStyles);
   const { session } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -181,16 +191,17 @@ function SignOutSection() {
   );
 }
 
-const styles = StyleSheet.create({
-  title: { color: colors.text, fontSize: 24, fontWeight: "700" },
-  section: { gap: 16 },
-  account: {
-    marginTop: 16,
-    paddingTop: 24,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.divider,
-  },
-  muted: { color: colors.muted, fontSize: 16 },
-  error: { color: colors.error, fontSize: 16, lineHeight: 24 },
-  success: { color: colors.success, fontSize: 16, lineHeight: 24 },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    title: { color: colors.text, fontSize: fontSize.x3l, fontWeight: fontWeight.bold },
+    section: { gap: space.lg },
+    account: {
+      marginTop: space.lg,
+      paddingTop: space.x2l,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.divider,
+    },
+    muted: { color: colors.muted, fontSize: fontSize.md },
+    error: { color: colors.error, fontSize: fontSize.md, lineHeight: lineHeight.md },
+    success: { color: colors.success, fontSize: fontSize.md, lineHeight: lineHeight.md },
+  });
