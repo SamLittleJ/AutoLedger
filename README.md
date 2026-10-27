@@ -198,7 +198,8 @@ npm test
 tries to read, insert, update and delete A's vehicle and expenses as B,
 including inserting an expense on A's vehicle and moving one of B's expenses
 onto it. Every attempt must fail or affect zero rows; an anonymous client must
-see nothing. It also checks that the odometer trigger raises
+see nothing. It confirms that the database itself rejects a negative cost or
+odometer sent directly through the API. It also checks that the odometer trigger raises
 `current_odometer` only for a higher reading, both when an expense is added and
 when it is edited, and never lowers it. Test rows are removed at the end.
 

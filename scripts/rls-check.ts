@@ -200,6 +200,32 @@ async function main() {
     expectDenied("anon cannot read vehicles", await anon.from("vehicles").select("id"));
     expectDenied("anon cannot read expenses", await anon.from("expenses").select("id"));
 
+    console.log("\nDatabase constraints (account A)");
+
+    // The form rejects these too; here the API is called directly, so only
+    // the CHECK constraints stand in the way (23514 = check_violation).
+    for (const [name, values] of [
+      ["a negative cost is rejected", { cost: -1, odometer: null }],
+      ["a negative odometer is rejected", { cost: 1, odometer: -1 }],
+    ] as const) {
+      const result = await a
+        .from("expenses")
+        .insert({
+          vehicle_id: vehicleA.id,
+          performed_on: "2000-01-01",
+          category: "other",
+          description: "rls-check constraint",
+          ...values,
+        })
+        .select("id");
+      for (const row of result.data ?? []) createdA.push(row.id);
+      report(
+        result.error?.code === "23514",
+        name,
+        result.error ? `error ${result.error.code}` : "row was inserted",
+      );
+    }
+
     console.log("\nOdometer trigger (account A)");
 
     const higher = originalOdometer + 1000;
