@@ -150,8 +150,13 @@ Apply the database migrations:
 npx supabase login
 npx supabase link --project-ref <ref>
 npx supabase db push
-npx supabase functions deploy delete-account
+npx supabase functions deploy delete-account --use-api
 ```
+
+`--use-api` bundles the function on Supabase's servers instead of in a local
+Docker container. Without it, on Fedora (Podman with SELinux enforcing) the
+container cannot read the project folder and the deploy fails with "entrypoint
+path does not exist".
 
 Disable "Confirm email" in the Supabase Auth settings. Supabase's built-in email
 service delivers only to the email addresses of the project's team members, so
