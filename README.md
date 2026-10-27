@@ -5,31 +5,90 @@
 AutoLedger is a mobile app for recording a car's expenses (service, repairs, fuel,
 consumables, accessories), reviewing the history, and seeing monthly and total
 spending in RON. It is a learning project built for a university course and for
-a portfolio. The domain is well known and similar apps exist (for example Drivvo
-and Fuelio), so the emphasis is on execution: tested data isolation, a clean
-schema, and documentation. The user interface is in Romanian.
+a portfolio. The domain is well known and similar apps exist (for example Drivvo,
+Fuelio and Simply Auto), so the emphasis is on execution: tested data isolation,
+a clean schema, and documentation. The user interface is in Romanian.
+
+## Features
+
+- Email and password accounts with a persistent session.
+- One vehicle per account, with its current odometer.
+- Expenses in six categories, with date, description, cost, optional odometer
+  and notes: add, edit, delete with confirmation.
+- An expense with a higher odometer reading raises the vehicle's odometer; a
+  lower or missing reading leaves it unchanged.
+- Summary: spent this calendar month, total spent, latest five expenses.
+- History ordered by date, filterable by category.
+- Clear messages for validation, network and server errors; forms keep their
+  values for a retry.
 
 ## Status
 
-Work in progress, following a 5-week plan. Week 1 (authentication and the
-`vehicles` table with Row Level Security) is complete and verified on a phone.
-Week 2 (the `expenses` table with RLS and the odometer trigger, tab navigation,
-the vehicle screen, adding and listing expenses) is complete: verified on a
-phone, and the cross-account RLS check passes. Week 3 (editing, deleting with
-confirmation, the summary with the total spent and the latest five expenses,
-and filtering history by category) is complete and verified on a phone. Week 4
-("Cheltuit luna aceasta" with month-boundary tests, form length limits, a
-neutral server error message, and the manual phone test checklist) is complete;
-every manual test passes. The full plan, including
-design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
+All five weeks of the plan are implemented. Weeks 1–4 are verified on a phone
+and by the automated checks; week 5 (portfolio and demo) is being finalized.
+The full plan, including design decisions and scope, is in
+[docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
-## Tech stack
+## Architecture
 
-- React Native with Expo SDK 58 and TypeScript
-- Expo Router for navigation
-- Supabase: Auth, PostgreSQL with Row Level Security, auto-generated REST API
-- Supabase CLI for versioned SQL migrations
-- Jest with jest-expo for unit tests
+```mermaid
+flowchart LR
+  subgraph Phone["Phone (Expo Go)"]
+    App["React Native app<br/>Expo Router screens"]
+    Lib["src/lib<br/>validation, totals (pure)"]
+    Client["supabase-js<br/>publishable key, session in local storage"]
+    App --> Lib
+    App --> Client
+  end
+
+  subgraph Supabase["Supabase project"]
+    Auth["Auth<br/>accounts, JWT sessions"]
+    Rest["REST API<br/>(PostgREST)"]
+    subgraph Db["PostgreSQL"]
+      Tables["vehicles, expenses<br/>constraints, column grants"]
+      Rls["RLS policies<br/>owner checked through the vehicle"]
+      Trigger["odometer trigger<br/>SECURITY INVOKER"]
+    end
+  end
+
+  Client -- "sign-in, refresh" --> Auth
+  Client -- "CRUD with the user's JWT" --> Rest
+  Rest --> Rls --> Tables
+  Tables --> Trigger
+  Check["scripts/rls-check.ts<br/>two test accounts"] -- "cross-account attempts" --> Rest
+```
+
+Totals are computed on the phone from the loaded expenses, in pure functions
+with unit tests. The database enforces types, constraints and ownership; the app
+never holds a secret key.
+
+## What I built and what the services provide
+
+Supabase and Expo provide the infrastructure:
+
+- **Supabase:** account storage and password hashing, JWT sessions and their
+  refresh, the REST API generated from the schema, PostgreSQL hosting, and the
+  RLS engine that applies the policies.
+- **Expo:** the React Native toolchain, Expo Go, file-based routing.
+
+The project's own work is the data model and its guarantees, plus the app:
+
+- **Schema** (`supabase/migrations/`): two tables with `numeric(10,2)` costs,
+  `date` expense days, ASCII category codes, `CHECK` constraints, and
+  column-level grants (for example, an expense cannot be moved to another
+  vehicle through an update).
+- **RLS policies:** an expense's owner is checked through its vehicle with
+  `EXISTS` in both `USING` and `WITH CHECK`. There is deliberately no `user_id`
+  on `expenses`, so ownership has a single source of truth.
+- **Odometer trigger:** raises the vehicle's odometer only for a higher reading,
+  runs as the calling user so RLS still applies, and never lowers it.
+- **Verification:** `scripts/rls-check.ts` attacks one account's data from
+  another through the REST API and tests the trigger; unit tests cover totals
+  (including month boundaries and the change of year), parsing of Romanian
+  decimal input, validation and error mapping; a manual phone checklist covers
+  sessions and offline behavior. CI runs lint, type checks and unit tests.
+- **App:** screens, forms, loading, error and empty states, and the client-side
+  calculations.
 
 ## Security model
 
@@ -44,6 +103,14 @@ design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
   column.
 - A cross-account script (`scripts/rls-check.ts`) verifies the isolation
   through the REST API, using only the publishable key (see below).
+
+## Tech stack
+
+- React Native with Expo SDK 58 and TypeScript
+- Expo Router for navigation
+- Supabase: Auth, PostgreSQL with Row Level Security, auto-generated REST API
+- Supabase CLI for versioned SQL migrations
+- Jest with jest-expo for unit tests
 
 ## Getting started
 
@@ -76,14 +143,46 @@ npx supabase link --project-ref <ref>
 npx supabase db push
 ```
 
-During development, disable "Confirm email" in the Supabase Auth settings. The
-plan enables it again in week 5.
+Disable "Confirm email" in the Supabase Auth settings. Supabase's built-in email
+service delivers only to the email addresses of the project's team members, so
+with confirmation on, nobody else could create an account. A real deployment
+would configure a custom SMTP server and turn confirmation on.
 
 Start the development server and scan the QR code with Expo Go:
 
 ```bash
 npx expo start
 ```
+
+## Demo
+
+### Before the demo
+
+1. Free-tier Supabase projects pause after a period of inactivity. Open the
+   project in the Supabase dashboard and resume it if needed.
+2. Reset the demo account to its known data:
+
+   ```bash
+   cp .env.demo.example .env.demo   # URL, publishable key, demo account
+   cp demo-data.example.json demo-data.json   # then fill in real expenses
+   npm run seed-demo
+   ```
+
+   The script signs in as the demo account, sets its vehicle, deletes all its
+   expenses and inserts the ones from `demo-data.json`. A row the database
+   rejects is named in the output. `.env.demo` and `demo-data.json` are not
+   committed.
+
+### Scenario
+
+1. Sign in with the demo account. The summary shows the vehicle, spending this
+   month and the total.
+2. Add a fuel expense dated today with an odometer above the vehicle's. Both
+   totals and the vehicle odometer go up.
+3. In "Istoric", filter by "Combustibil".
+4. Open an expense, change its cost, save; then delete it and confirm.
+5. Run `npm run rls-check` to show that a second account cannot read or change
+   the first account's data.
 
 ## Checks
 
@@ -135,6 +234,7 @@ src/
   types/        Generated database types
 scripts/
   rls-check.ts  Cross-account RLS and trigger check
+  seed-demo.ts  Resets the demo account's data
 supabase/
   migrations/  Versioned SQL migrations (schema, RLS policies)
 docs/
@@ -146,9 +246,14 @@ docs/
 
 - Supabase free-tier projects pause after a period of inactivity. Resume the
   project in the Supabase dashboard before a demonstration.
+- Email confirmation is off: the built-in email service only reaches the
+  project's team members (see Getting started). Turning it on needs a custom
+  SMTP server; the confirmation link would also open in a browser, not the app
+  (no deep link).
 - The app works online only; there is no offline mode.
 - One vehicle per account.
-- Email confirmation links do not open the app (no deep link). Out of scope.
+- Light appearance only; the app does not follow the phone's dark mode.
+- Dates are typed as `AAAA-LL-ZZ` (today is prefilled); there is no date picker.
 - Sign-out works offline in the usual case, but after more than an hour without
   a connection the access token has expired and signing out needs the network
   (supabase-js refreshes the session first). The app shows a connection message.
