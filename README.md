@@ -24,10 +24,12 @@ a clean schema, and documentation. The user interface is in Romanian.
 
 ## Status
 
-All five weeks of the plan are implemented. Weeks 1–4 are verified on a phone
-and by the automated checks; week 5 (portfolio and demo) is being finalized.
-The full plan, including design decisions and scope, is in
-[docs/PLAN.md](docs/PLAN.md) (in Romanian).
+All five weeks of the plan are complete. Every completion criterion in
+[docs/PLAN.md](docs/PLAN.md) §12 has evidence: unit tests and lint and type
+checks in CI, the cross-account and database-constraint checks in
+`scripts/rls-check.ts`, and the manual phone tests in
+[docs/manual-tests.md](docs/manual-tests.md). Screenshots will be added in a
+later update. The plan, including design decisions and scope, is in Romanian.
 
 ## Architecture
 
