@@ -1,6 +1,15 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  space,
+  touchSize,
+  useAppTheme,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 
 type ButtonProps = {
   title: string;
@@ -17,6 +26,8 @@ export function Button({
   disabled = false,
   isLoading = false,
 }: ButtonProps) {
+  const { colors } = useAppTheme();
+  const styles = useThemedStyles(createStyles);
   const isPrimary = variant === "primary";
   const outlineColor = variant === "danger" ? colors.error : colors.primary;
   const isDisabled = disabled || isLoading;
@@ -43,18 +54,19 @@ export function Button({
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 8,
-    minHeight: 48,
-    padding: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  primary: { backgroundColor: colors.primary },
-  outline: { backgroundColor: colors.background, borderWidth: 1 },
-  dimmed: { opacity: 0.6 },
-  text: { fontSize: 16, fontWeight: "600" },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    button: {
+      borderRadius: radius.sm,
+      minHeight: touchSize.comfortable,
+      padding: space.md,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: space.sm,
+    },
+    primary: { backgroundColor: colors.primary },
+    outline: { backgroundColor: colors.background, borderWidth: 1 },
+    dimmed: { opacity: 0.6 },
+    text: { fontSize: fontSize.md, fontWeight: fontWeight.semibold },
+  });

@@ -4,7 +4,15 @@ import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native
 import { Button } from "@/components/button";
 import { ExpenseRow } from "@/components/expense-row";
 import { ErrorView, LoadingView, NoVehicleView } from "@/components/state-views";
-import { colors } from "@/components/theme";
+import {
+  fontSize,
+  fontWeight,
+  lineHeight,
+  radius,
+  space,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 import { latestExpenses, monthlyTotal, totalCost } from "@/lib/calc";
 import { currentMonthKey, formatMonth } from "@/lib/dates";
 import { fetchVehicleWithExpenses } from "@/lib/expenses";
@@ -15,6 +23,7 @@ const LATEST_COUNT = 5;
 
 export default function SummaryScreen() {
   const { state, isRefreshing, reload } = useFocusLoad(fetchVehicleWithExpenses);
+  const styles = useThemedStyles(createStyles);
 
   if (state.status === "loading") return <LoadingView />;
   if (state.status === "error") return <ErrorView message={state.message} onRetry={reload} />;
@@ -76,23 +85,28 @@ export default function SummaryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
-  content: { paddingVertical: 24, gap: 16 },
-  padded: { paddingHorizontal: 24, gap: 16 },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    padding: 20,
-    gap: 4,
-  },
-  vehicleName: { color: colors.text, fontSize: 22, fontWeight: "700" },
-  muted: { color: colors.muted, fontSize: 16 },
-  total: { color: colors.text, fontSize: 28, fontWeight: "700" },
-  overall: { color: colors.text, fontWeight: "600" },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.divider, marginVertical: 8 },
-  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: "700" },
-  empty: { color: colors.muted, fontSize: 16, lineHeight: 24 },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: colors.background },
+    content: { paddingVertical: space.x2l, gap: space.lg },
+    padded: { paddingHorizontal: space.x2l, gap: space.lg },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: colors.divider,
+      padding: space.xl,
+      gap: space.xs,
+    },
+    vehicleName: { color: colors.text, fontSize: fontSize.x2l, fontWeight: fontWeight.bold },
+    muted: { color: colors.muted, fontSize: fontSize.md },
+    total: { color: colors.text, fontSize: fontSize.x4l, fontWeight: fontWeight.bold },
+    overall: { color: colors.text, fontWeight: fontWeight.semibold },
+    divider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.divider,
+      marginVertical: space.sm,
+    },
+    sectionTitle: { color: colors.text, fontSize: fontSize.lg, fontWeight: fontWeight.bold },
+    empty: { color: colors.muted, fontSize: fontSize.md, lineHeight: lineHeight.md },
+  });

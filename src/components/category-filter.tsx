@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet } from "react-native";
 
 import { Chip } from "@/components/chip";
+import { space } from "@/components/theme";
 import { CATEGORIES, type ExpenseCategory } from "@/lib/categories";
 
 type CategoryFilterProps = {
@@ -32,5 +33,5 @@ export function CategoryFilter({ value, onChange }: CategoryFilterProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { gap: 8, paddingHorizontal: 16 },
+  row: { gap: space.sm, paddingHorizontal: space.lg },
 });

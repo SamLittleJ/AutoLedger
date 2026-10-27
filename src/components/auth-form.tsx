@@ -13,6 +13,17 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import {
+  fontSize,
+  fontWeight,
+  lineHeight,
+  radius,
+  space,
+  touchSize,
+  useAppTheme,
+  useThemedStyles,
+  type AppTheme,
+} from "@/components/theme";
 import { useAuth } from "@/lib/auth";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +31,8 @@ import { supabase } from "@/lib/supabase";
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const isSignUp = mode === "sign-up";
   const { initializationError } = useAuth();
+  const { colors } = useAppTheme();
+  const styles = useThemedStyles(createStyles);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -97,7 +110,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
               autoCorrect={false}
               autoComplete="email"
               placeholder="nume@exemplu.ro"
-              placeholderTextColor="#64748b"
+              placeholderTextColor={colors.muted}
               editable={!isSubmitting}
             />
 
@@ -152,7 +165,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
                 (isSubmitting || pressed) && styles.buttonDimmed,
               ]}
             >
-              {isSubmitting && <ActivityIndicator color="#ffffff" />}
+              {isSubmitting && <ActivityIndicator color={colors.primaryText} />}
               <Text style={styles.buttonText}>
                 {isSubmitting
                   ? "Se trimite…"
@@ -178,43 +191,53 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
-  content: { flexGrow: 1, justifyContent: "center", padding: 24 },
-  form: { width: "100%", maxWidth: 420, alignSelf: "center", gap: 12 },
-  brand: { color: "#2563eb", fontSize: 18, fontWeight: "600" },
-  title: { color: "#0f172a", fontSize: 28, fontWeight: "700", marginBottom: 12 },
-  label: { color: "#0f172a", fontSize: 16, fontWeight: "500" },
-  input: {
-    borderWidth: 1,
-    borderColor: "#94a3b8",
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 48,
-    fontSize: 16,
-    color: "#0f172a",
-    backgroundColor: "#ffffff",
-  },
-  error: { color: "#b91c1c", fontSize: 16, lineHeight: 24 },
-  message: { color: "#166534", fontSize: 16, lineHeight: 24 },
-  button: {
-    backgroundColor: "#2563eb",
-    borderRadius: 8,
-    minHeight: 48,
-    padding: 12,
-    marginTop: 8,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  buttonDimmed: { opacity: 0.6 },
-  buttonText: { color: "#ffffff", fontSize: 16, fontWeight: "600" },
-  link: {
-    color: "#1d4ed8",
-    fontSize: 16,
-    textAlign: "center",
-    paddingVertical: 16,
-    textDecorationLine: "underline",
-  },
-});
+const createStyles = ({ colors }: AppTheme) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: colors.background },
+    content: { flexGrow: 1, justifyContent: "center", padding: space.x2l },
+    form: { width: "100%", maxWidth: 420, alignSelf: "center", gap: space.md },
+    brand: { color: colors.primary, fontSize: fontSize.lg, fontWeight: fontWeight.semibold },
+    title: {
+      color: colors.text,
+      fontSize: fontSize.x4l,
+      fontWeight: fontWeight.bold,
+      marginBottom: space.md,
+    },
+    label: { color: colors.text, fontSize: fontSize.md, fontWeight: fontWeight.medium },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.sm,
+      padding: space.md,
+      minHeight: touchSize.comfortable,
+      fontSize: fontSize.md,
+      color: colors.text,
+      backgroundColor: colors.background,
+    },
+    error: { color: colors.error, fontSize: fontSize.md, lineHeight: lineHeight.md },
+    message: { color: colors.success, fontSize: fontSize.md, lineHeight: lineHeight.md },
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: radius.sm,
+      minHeight: touchSize.comfortable,
+      padding: space.md,
+      marginTop: space.sm,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: space.sm,
+    },
+    buttonDimmed: { opacity: 0.6 },
+    buttonText: {
+      color: colors.primaryText,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold,
+    },
+    link: {
+      color: colors.link,
+      fontSize: fontSize.md,
+      textAlign: "center",
+      paddingVertical: space.lg,
+      textDecorationLine: "underline",
+    },
+  });
