@@ -17,7 +17,10 @@ Week 2 (the `expenses` table with RLS and the odometer trigger, tab navigation,
 the vehicle screen, adding and listing expenses) is complete: verified on a
 phone, and the cross-account RLS check passes. Week 3 (editing, deleting with
 confirmation, the summary with the total spent and the latest five expenses,
-and filtering history by category) is complete and verified on a phone. The full plan, including
+and filtering history by category) is complete and verified on a phone. Week 4
+("Cheltuit luna aceasta" with month-boundary tests, form length limits, a
+neutral server error message, and the manual phone test checklist) is complete;
+every manual test passes. The full plan, including
 design decisions and scope, is in [docs/PLAN.md](docs/PLAN.md) (in Romanian).
 
 ## Tech stack

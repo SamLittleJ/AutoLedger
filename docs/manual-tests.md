@@ -42,4 +42,4 @@ Turn airplane mode on after the app has loaded, unless a step says otherwise.
 
 | Date | Device | Result |
 | --- | --- | --- |
-| | | |
+| 2026-10-27 | Phone, Expo Go (model not recorded) | All checks passed. |
