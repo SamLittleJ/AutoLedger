@@ -30,8 +30,17 @@ async function readDemoData(path: string): Promise<DemoData> {
   // Resolved against the current directory; a JSON import avoids needing
   // Node type definitions in this React Native project.
   const url = new URL(path, `file://${process.cwd()}/`).href;
-  const module = (await import(url, { with: { type: "json" } })) as { default: DemoData };
-  const data = module.default;
+  let data: DemoData;
+  try {
+    ({ default: data } = (await import(url, { with: { type: "json" } })) as { default: DemoData });
+  } catch (error) {
+    if ((error as { code?: string }).code === "ERR_MODULE_NOT_FOUND") {
+      throw new Error(
+        `${path} not found. Copy demo-data.example.json to ${path} and fill in the expenses.`,
+      );
+    }
+    throw new Error(`${path} is not valid JSON: ${(error as Error).message}`);
+  }
   if (!data.vehicle || !Array.isArray(data.expenses)) {
     throw new Error(`${path} needs a "vehicle" object and an "expenses" array.`);
   }
