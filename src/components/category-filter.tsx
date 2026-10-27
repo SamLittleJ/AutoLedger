@@ -33,5 +33,5 @@ export function CategoryFilter({ value, onChange }: CategoryFilterProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { gap: space.sm, paddingHorizontal: space.lg },
+  row: { gap: space.sm, paddingHorizontal: space.xl },
 });

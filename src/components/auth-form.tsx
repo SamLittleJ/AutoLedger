@@ -194,9 +194,9 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 const createStyles = ({ colors }: AppTheme) =>
   StyleSheet.create({
     screen: { flex: 1, backgroundColor: colors.background },
-    content: { flexGrow: 1, justifyContent: "center", padding: space.x2l },
+    content: { flexGrow: 1, justifyContent: "center", padding: space.xl },
     form: { width: "100%", maxWidth: 420, alignSelf: "center", gap: space.md },
-    brand: { color: colors.primary, fontSize: fontSize.lg, fontWeight: fontWeight.semibold },
+    brand: { color: colors.accent, fontSize: fontSize.lg, fontWeight: fontWeight.semibold },
     title: {
       color: colors.text,
       fontSize: fontSize.x4l,
@@ -207,7 +207,7 @@ const createStyles = ({ colors }: AppTheme) =>
     input: {
       borderWidth: 1,
       borderColor: colors.border,
-      borderRadius: radius.sm,
+      borderRadius: radius.md,
       padding: space.md,
       minHeight: touchSize.comfortable,
       fontSize: fontSize.md,
@@ -218,7 +218,7 @@ const createStyles = ({ colors }: AppTheme) =>
     message: { color: colors.success, fontSize: fontSize.md, lineHeight: lineHeight.md },
     button: {
       backgroundColor: colors.primary,
-      borderRadius: radius.sm,
+      borderRadius: radius.md,
       minHeight: touchSize.comfortable,
       padding: space.md,
       marginTop: space.sm,

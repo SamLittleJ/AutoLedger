@@ -27,6 +27,6 @@ export function FormScreen({ children }: PropsWithChildren) {
 const createStyles = ({ colors }: AppTheme) =>
   StyleSheet.create({
     screen: { flex: 1, backgroundColor: colors.background },
-    content: { padding: space.x2l, paddingBottom: space.x3l },
+    content: { padding: space.xl, paddingBottom: space.x3l },
     form: { width: "100%", maxWidth: 480, alignSelf: "center", gap: space.lg },
   });
