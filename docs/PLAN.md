@@ -1,6 +1,8 @@
 # AutoLedger — Planul aplicației mobile
 
-Versiunea 0.3 · 20 octombrie 2026 · Durată de lucru: 5 săptămâni
+Versiunea 0.4 · 27 octombrie 2026 · Durată de lucru: 5 săptămâni
+
+Versiunea 0.4 păstrează planul v0.3 neschimbat și adaugă la final secțiunea 15, cu deciziile luate în timpul implementării.
 
 Versiunea 0.3 extinde planul v0.2 cu evidența cheltuielilor de zi cu zi (combustibil, accesorii, lichid de parbriz etc.) și cu rezumatul „Cheltuit luna aceasta”. Tabelul `maintenance_entries` devine `expenses`, iar „intervenții” devin „cheltuieli”. Kilometrajul unei cheltuieli devine opțional. Fiindcă nu există încă SQL sau cod, redenumirea nu costă nimic.
 
@@ -306,3 +308,32 @@ Nu se negociază: autentificarea, izolarea datelor (RLS + scriptul de verificare
 - README în engleză: descriere, capturi, diagramă de arhitectură, pași de pornire, limitări, contribuția proprie față de serviciile integrate. Aplicația se prezintă ca proiect de învățare într-un domeniu cunoscut, nu ca produs nou: există multe aplicații similare (Drivvo, Fuelio, Simply Auto ș.a.), iar valoarea proiectului e în calitatea execuției.
 - Un cont demonstrativ cu date realiste (de preferat cheltuielile reale ale mașinii tale), pentru un scenariu scurt de prezentare.
 - Pe planul gratuit, Supabase pune proiectele pe pauză după o perioadă de inactivitate. Proiectul trebuie reactivat înainte de orice demonstrație; README-ul menționează acest lucru.
+
+---
+
+## 15. Modificări în timpul implementării
+
+Deciziile de mai jos completează sau înlocuiesc punctele indicate. Secțiunile 1–14 au rămas așa cum erau în v0.3.
+
+### Confirmarea emailului (înlocuiește D2 pentru săptămâna 5)
+
+- Confirmarea emailului **rămâne dezactivată**. Pagina statică nu se mai face.
+- Motiv: serviciul de email implicit Supabase trimite mesaje doar adreselor membrilor echipei proiectului (pe orice plan) și are o limită mică pe oră. Cu confirmarea activă, nimeni din afara echipei nu și-ar putea crea cont, nici evaluatorul. Pentru activare ar fi nevoie de un server SMTP propriu.
+- Este tăierea 3 din secțiunea 13. README-ul explică limitarea.
+
+### Interfață și formulare
+
+- Editarea se deschide cu tap pe rândul cheltuielii (Istoric și Rezumat); ștergerea se face doar din ecranul de editare, cu confirmare care numește descrierea, suma și data.
+- „Ultimele 5” folosesc aceeași ordine ca Istoricul (data cheltuielii, apoi momentul adăugării).
+- Filtrarea după categorie se face pe client, pe un rând de butoane derulabil orizontal; fără total pe categorie.
+- „Cheltuit luna aceasta” este cifra principală din Rezumat, cu numele lunii dedesubt; totalul general apare sub ea.
+- Limite de lungime doar în formulare: descriere 120, observații 1000, marcă și model câte 50 de caractere. Costul 0 este permis.
+- Data se introduce ca text `AAAA-LL-ZZ`, precompletată cu ziua curentă; un selector de dată rămâne extensie.
+- Aplicația folosește doar tema deschisă (`userInterfaceStyle: "light"`).
+
+### Teste și demonstrație
+
+- Testele manuale de pe telefon (cont, sesiune, lipsa conexiunii, fluxul de cheltuieli) sunt în `docs/manual-tests.md`, cu un jurnal al rulărilor.
+- `scripts/rls-check.ts` verifică și ramura UPDATE a trigger-ului (editarea kilometrajului).
+- Datele demonstrative se încarcă cu `scripts/seed-demo.ts` din `demo-data.json` (necomis), într-un cont dedicat, cu datele de conectare în `.env.demo` (necomis). Scriptul șterge și reface cheltuielile contului la fiecare rulare.
+- Deconectarea fără conexiune funcționează în cazul obișnuit; după expirarea tokenului de acces (o oră fără conexiune) cere rețea. Limitarea e notată în README.

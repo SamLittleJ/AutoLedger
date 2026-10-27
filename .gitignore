@@ -33,6 +33,10 @@ yarn-error.*
 # local env files
 .env
 .env.test
+.env.demo
+
+# demo account data (real expenses, kept local)
+demo-data.json
 .env*.local
 
 # typescript

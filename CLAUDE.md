@@ -2,7 +2,7 @@
 
 Aplicație mobilă pentru evidența cheltuielilor unei mașini (revizii, reparații, combustibil, consumabile, accesorii). Proiect de învățare pentru facultate și portofoliu, nu produs nou pe piață.
 
-**Planul complet, cu toate deciziile și motivarea lor: `docs/PLAN.md` (v0.3). Citește-l înainte de orice etapă nouă.**
+**Planul complet, cu toate deciziile și motivarea lor: `docs/PLAN.md` (v0.4; deciziile din timpul implementării sunt în §15). Citește-l înainte de orice etapă nouă.**
 
 ## Stack
 
@@ -26,7 +26,7 @@ Aplicație mobilă pentru evidența cheltuielilor unei mașini (revizii, repara�
 - **Kilometraj:** `expenses.odometer` este opțional (NULL permis, altfel `>= 0`). O cheltuială cu kilometraj mai mare decât `current_odometer` îl actualizează printr-un trigger `SECURITY INVOKER`, care nu face nimic când kilometrajul lipsește (condiție `new.odometer is not null` scrisă explicit). Valorile mai mici sunt permise. Kilometrajul mașinii nu scade automat.
 - **Combustibil și accesorii:** doar sumă. Fără litri, preț pe litru sau consum mediu.
 - **Rezumat lunar:** „Cheltuit luna aceasta” = luna calendaristică curentă, după data locală a telefonului. Se calculează pe client în `src/lib/calc.ts`, comparând prefixul `AAAA-LL` din șirul `performed_on`; nu parsa `performed_on` în `Date`. Doar luna curentă și totalul general.
-- **Confirmare email:** dezactivată în săptămânile 1–4; în săptămâna 5 se activează cu redirect către o pagină statică. Fără deep link.
+- **Confirmare email:** rămâne dezactivată (PLAN §15). Serviciul de email implicit Supabase trimite doar membrilor echipei proiectului; activarea ar cere SMTP propriu. Fără pagină statică, fără deep link.
 - **Totaluri:** calculate pe client, în funcții pure din `src/lib/calc.ts`, cu teste unitare (inclusiv limitele lunii și trecerea dintre ani).
 - **Date din viitor:** respinse în formular, nu prin CHECK în baza de date.
 

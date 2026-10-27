@@ -1,0 +1,34 @@
+{
+  "vehicle": {
+    "make": "Dacia",
+    "model": "Logan",
+    "year": 2017,
+    "current_odometer": 120000
+  },
+  "expenses": [
+    {
+      "performed_on": "2026-03-14",
+      "category": "service",
+      "description": "Revizie: ulei și filtre",
+      "cost": 650.0,
+      "odometer": 128500,
+      "notes": null
+    },
+    {
+      "performed_on": "2026-04-02",
+      "category": "fuel",
+      "description": "Plin benzină",
+      "cost": 310.5,
+      "odometer": null,
+      "notes": null
+    },
+    {
+      "performed_on": "2026-05-20",
+      "category": "accessories",
+      "description": "Covorașe cauciuc",
+      "cost": 129.99,
+      "odometer": null,
+      "notes": "Set complet"
+    }
+  ]
+}
