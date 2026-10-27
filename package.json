@@ -48,7 +48,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test": "jest",
-    "rls-check": "node --env-file=.env.test scripts/rls-check.ts"
+    "rls-check": "node --env-file=.env.test scripts/rls-check.ts",
+    "seed-demo": "node --env-file=.env.demo scripts/seed-demo.ts"
   },
   "private": true,
   "license": "MIT",
